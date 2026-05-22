@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakSafe - Bullying Assessment & Survey</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandDark: '#030b14', 
+                        brandTeal: '#00b4d8', 
+                        brandTealHover: '#0096b4',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .dot-matrix {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .glass-panel {
+            background: rgba(4, 15, 26, 0.6);
+            backdrop-filter: blur(16px);
+        }
+        .quiz-option {
+            transition: all 0.3s ease;
+        }
+        .quiz-option:hover {
+            transform: translateX(8px);
+        }
+        .result-card {
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-brandDark text-white antialiased dot-matrix">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full z-40 bg-brandDark/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-8 h-8 rounded-xl bg-transparent border-2 border-brandTeal flex items-center justify-center">
+                    <i class="fa-solid fa-shield-halved text-brandTeal text-sm"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-white">
+                    Speak<span class="text-brandTeal">safe</span>
+                </span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="text-white/70 hover:text-brandTeal transition-colors text-sm">Home</a>
+                <a href="mapfull.html" class="text-white/70 hover:text-brandTeal transition-colors text-sm">Map</a>
+                <a href="help.html" class="text-white/70 hover:text-brandTeal transition-colors text-sm">Help</a>
+                <a href="quiz.html" class="text-brandTeal font-semibold text-sm">Assessment</a>
+            </nav>
+            <div id="auth-status" class="flex items-center gap-3">
+                <button onclick="window.location.href='index.html'" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-4 py-2 rounded-full text-sm">
+                    Back to Home
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <section class="pt-28 pb-12 px-6">
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- Level Selection -->
+            <div id="level-selection" class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Bullying Assessment Center</h1>
+                <p class="text-white/60 mb-12">Choose an option below to get started</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Quiz Option -->
+                    <div class="glass-panel rounded-2xl p-8 border border-white/10 cursor-pointer hover:border-brandTeal/50 transition-all" onclick="startQuiz()">
+                        <div class="w-20 h-20 rounded-full bg-brandTeal/20 flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-clipboard-list text-brandTeal text-3xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Am I Being Bullied?</h2>
+                        <p class="text-white/50 text-sm">Take our self-assessment quiz to understand if you're experiencing bullying.</p>
+                    </div>
+                    
+                    <!-- Survey Option -->
+                    <div class="glass-panel rounded-2xl p-8 border border-white/10 cursor-pointer hover:border-brandTeal/50 transition-all" onclick="startSurvey()">
+                        <div class="w-20 h-20 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-chart-line text-purple-500 text-3xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Bullying Survey</h2>
+                        <p class="text-white/50 text-sm">Share your experience to help us understand bullying patterns.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Container (Hidden Initially) -->
+            <div id="quiz-container" class="hidden">
+                <div class="mb-6">
+                    <button onclick="backToLevels()" class="text-white/50 hover:text-brandTeal transition-colors">
+                        <i class="fa-solid fa-arrow-left"></i> Back to options
+                    </button>
+                </div>
+                
+                <div class="glass-panel rounded-2xl p-8 border border-white/10">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <h2 class="text-2xl font-bold text-white">Bullying Self-Assessment Quiz</h2>
+                            <span id="quiz-progress-text" class="text-brandTeal">Question 1/10</span>
+                        </div>
+                        <div class="w-full bg-white/10 rounded-full h-2">
+                            <div id="quiz-progress-bar" class="bg-brandTeal h-2 rounded-full progress-bar" style="width: 10%"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="quiz-question-container">
+                        <!-- Dynamic questions will appear here -->
+                    </div>
+                    
+                    <div class="flex justify-between mt-8">
+                        <button onclick="prevQuizQuestion()" id="quiz-prev-btn" class="bg-white/5 hover:bg-white/10 text-white px-6 py-2 rounded-xl transition-all hidden">
+                            <i class="fa-solid fa-chevron-left"></i> Previous
+                        </button>
+                        <button onclick="nextQuizQuestion()" id="quiz-next-btn" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-6 py-2 rounded-xl transition-all ml-auto">
+                            Next <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Survey Container (Hidden Initially) -->
+            <div id="survey-container" class="hidden">
+                <div class="mb-6">
+                    <button onclick="backToLevels()" class="text-white/50 hover:text-brandTeal transition-colors">
+                        <i class="fa-solid fa-arrow-left"></i> Back to options
+                    </button>
+                </div>
+                
+                <div class="glass-panel rounded-2xl p-8 border border-white/10">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <h2 class="text-2xl font-bold text-white">Bullying Experience Survey</h2>
+                            <span id="survey-progress-text" class="text-purple-400">Question 1/12</span>
+                        </div>
+                        <div class="w-full bg-white/10 rounded-full h-2">
+                            <div id="survey-progress-bar" class="bg-purple-500 h-2 rounded-full progress-bar" style="width: 8%"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="survey-question-container">
+                        <!-- Dynamic survey questions here -->
+                    </div>
+                    
+                    <div class="flex justify-between mt-8">
+                        <button onclick="prevSurveyQuestion()" id="survey-prev-btn" class="bg-white/5 hover:bg-white/10 text-white px-6 py-2 rounded-xl transition-all hidden">
+                            <i class="fa-solid fa-chevron-left"></i> Previous
+                        </button>
+                        <button onclick="nextSurveyQuestion()" id="survey-next-btn" class="bg-purple-500 hover:bg-purple-600 text-white font-bold px-6 py-2 rounded-xl transition-all ml-auto">
+                            Next <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Container (Hidden Initially) - Simple on-screen display -->
+            <div id="results-container" class="hidden">
+                <div class="mb-6">
+                    <button onclick="backToLevels()" class="text-white/50 hover:text-brandTeal transition-colors">
+                        <i class="fa-solid fa-arrow-left"></i> Start Over
+                    </button>
+                </div>
+                
+                <div id="results-content" class="glass-panel rounded-2xl p-8 border border-white/10 result-card">
+                    <!-- Simple results will appear here (no answers visible on screen) -->
+                </div>
+                
+                <div class="flex gap-4 mt-6 justify-center">
+                    <button onclick="downloadPDF()" id="download-pdf-btn" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-8 py-3 rounded-xl transition-all">
+                        <i class="fa-solid fa-download"></i> Download Full Report (PDF)
+                    </button>
+                    <button onclick="backToLevels()" class="bg-white/5 hover:bg-white/10 text-white px-8 py-3 rounded-xl transition-all">
+                        <i class="fa-solid fa-plus"></i> Take Another Assessment
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hidden PDF Content Container (not visible to user) -->
+            <div id="pdf-content-container" style="display: none;">
+                <!-- PDF content will be generated here -->
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        // Quiz Questions (Am I Being Bullied?)
+        const quizQuestions = [
+            { text: "Do you feel scared or anxious about going to school or going online?", options: ["Never", "Rarely", "Sometimes", "Often", "Always"] },
+            { text: "Have others said mean or hurtful things to you online or in person?", options: ["Never", "Rarely", "Sometimes", "Often", "Always"] },
+            { text: "Do you feel left out or excluded on purpose by others?", options: ["Never", "Rarely", "Sometimes", "Often", "Always"] },
+            { text: "Have rumors been spread about you?", options: ["Never", "Rarely", "Sometimes", "Often", "Always"] },
+            { text: "Do you receive threatening or intimidating messages?", options: ["Never", "Rarely", "Sometimes", "Often", "Always"] },
+            { text: "Has someone shared embarrassing photos/videos of you without permission?", options: ["Never", "Rarely", "Sometimes", "Often", "Always"] },
+            { text: "Do you feel like you can't be yourself because of how others might react?", options: ["Never", "Rarely", "Sometimes", "Often", "Always"] },
+            { text: "Have you lost friends because of someone's actions towards you?", options: ["Never", "Rarely", "Sometimes", "Often", "Always"] },
+            { text: "Do you feel helpless or hopeless about the situation?", options: ["Never", "Rarely", "Sometimes", "Often", "Always"] },
+            { text: "Has the situation affected your grades or performance?", options: ["Never", "Rarely", "Sometimes", "Often", "Always"] }
+        ];
+
+        // Survey Questions (More detailed info)
+        const surveyQuestions = [
+            { text: "What is your age range?", options: ["Under 13", "13-15", "16-18", "19-24", "25+"] },
+            { text: "Where does the bullying primarily occur?", options: ["School/Work", "Online (Social Media)", "Both", "Neighborhood", "Other"] },
+            { text: "How long has this been happening?", options: ["Less than a week", "1-4 weeks", "1-3 months", "4-6 months", "More than 6 months"] },
+            { text: "What platforms do you experience bullying on? (Select main one)", options: ["Instagram", "TikTok", "Snapchat", "Discord", "Twitter/X", "Facebook", "School", "Other"] },
+            { text: "Have you told anyone about what's happening?", options: ["Yes, a parent", "Yes, a teacher", "Yes, a friend", "No one", "Yes, a therapist"] },
+            { text: "How has this affected your mental health?", options: ["Not at all", "Mildly", "Moderately", "Severely", "Extremely"] },
+            { text: "Have you missed school or work because of bullying?", options: ["Never", "Once or twice", "Several times", "Often", "Always"] },
+            { text: "Do you know who is bullying you?", options: ["Yes, classmates", "Yes, strangers online", "Yes, former friends", "No, anonymous", "Multiple people"] },
+            { text: "Have you considered seeking professional help?", options: ["Already receiving help", "Considering it", "Not sure", "No", "Don't need it"] },
+            { text: "What would help you most right now?", options: ["Someone to talk to", "Bullying to stop", "Support from friends", "Adult intervention", "Legal action"] },
+            { text: "How safe do you feel overall?", options: ["Very safe", "Somewhat safe", "Neutral", "Unsafe", "Very unsafe"] },
+            { text: "Would you like to receive resources for help?", options: ["Yes, please", "Maybe later", "No, thank you", "I already have help", "Not sure"] }
+        ];
+
+        let currentType = null;
+        let currentIndex = 0;
+        let quizAnswers = new Array(quizQuestions.length).fill(null);
+        let surveyAnswers = new Array(surveyQuestions.length).fill(null);
+        let currentResultsData = null;
+
+        function startQuiz() {
+            currentType = 'quiz';
+            currentIndex = 0;
+            quizAnswers = new Array(quizQuestions.length).fill(null);
+            document.getElementById('level-selection').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('survey-container').classList.add('hidden');
+            renderQuizQuestion();
+        }
+
+        function startSurvey() {
+            currentType = 'survey';
+            currentIndex = 0;
+            surveyAnswers = new Array(surveyQuestions.length).fill(null);
+            document.getElementById('level-selection').classList.add('hidden');
+            document.getElementById('survey-container').classList.remove('hidden');
+            document.getElementById('quiz-container').classList.add('hidden');
+            renderSurveyQuestion();
+        }
+
+        function backToLevels() {
+            currentType = null;
+            document.getElementById('level-selection').classList.remove('hidden');
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('survey-container').classList.add('hidden');
+            document.getElementById('results-container').classList.add('hidden');
+        }
+
+        function renderQuizQuestion() {
+            const container = document.getElementById('quiz-question-container');
+            const question = quizQuestions[currentIndex];
+            
+            container.innerHTML = `
+                <h3 class="text-xl font-semibold text-white mb-6">${currentIndex + 1}. ${question.text}</h3>
+                <div class="space-y-3">
+                    ${question.options.map((opt, idx) => `
+                        <label class="quiz-option flex items-center p-4 bg-white/5 rounded-xl border border-white/10 cursor-pointer hover:bg-white/10">
+                            <input type="radio" name="quiz-answer" value="${opt}" ${quizAnswers[currentIndex] === opt ? 'checked' : ''} class="w-4 h-4 text-brandTeal mr-3">
+                            <span class="text-white/80">${opt}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+            
+            document.querySelectorAll('input[name="quiz-answer"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    quizAnswers[currentIndex] = e.target.value;
+                });
+            });
+            
+            const progress = ((currentIndex + 1) / quizQuestions.length) * 100;
+            document.getElementById('quiz-progress-bar').style.width = `${progress}%`;
+            document.getElementById('quiz-progress-text').innerText = `Question ${currentIndex + 1}/${quizQuestions.length}`;
+            
+            const prevBtn = document.getElementById('quiz-prev-btn');
+            const nextBtn = document.getElementById('quiz-next-btn');
+            
+            if (currentIndex === 0) {
+                prevBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+            }
+            
+            if (currentIndex === quizQuestions.length - 1) {
+                nextBtn.innerHTML = 'Submit <i class="fa-solid fa-check"></i>';
+            } else {
+                nextBtn.innerHTML = 'Next <i class="fa-solid fa-chevron-right"></i>';
+            }
+        }
+
+        function renderSurveyQuestion() {
+            const container = document.getElementById('survey-question-container');
+            const question = surveyQuestions[currentIndex];
+            
+            container.innerHTML = `
+                <h3 class="text-xl font-semibold text-white mb-6">${currentIndex + 1}. ${question.text}</h3>
+                <div class="space-y-3">
+                    ${question.options.map((opt, idx) => `
+                        <label class="quiz-option flex items-center p-4 bg-white/5 rounded-xl border border-white/10 cursor-pointer hover:bg-white/10">
+                            <input type="radio" name="survey-answer" value="${opt}" ${surveyAnswers[currentIndex] === opt ? 'checked' : ''} class="w-4 h-4 text-purple-500 mr-3">
+                            <span class="text-white/80">${opt}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+            
+            document.querySelectorAll('input[name="survey-answer"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    surveyAnswers[currentIndex] = e.target.value;
+                });
+            });
+            
+            const progress = ((currentIndex + 1) / surveyQuestions.length) * 100;
+            document.getElementById('survey-progress-bar').style.width = `${progress}%`;
+            document.getElementById('survey-progress-text').innerText = `Question ${currentIndex + 1}/${surveyQuestions.length}`;
+            
+            const prevBtn = document.getElementById('survey-prev-btn');
+            const nextBtn = document.getElementById('survey-next-btn');
+            
+            if (currentIndex === 0) {
+                prevBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+            }
+            
+            if (currentIndex === surveyQuestions.length - 1) {
+                nextBtn.innerHTML = 'Submit <i class="fa-solid fa-check"></i>';
+            } else {
+                nextBtn.innerHTML = 'Next <i class="fa-solid fa-chevron-right"></i>';
+            }
+        }
+
+        function nextQuizQuestion() {
+            if (quizAnswers[currentIndex] === null) {
+                alert('Please select an answer before continuing.');
+                return;
+            }
+            
+            if (currentIndex === quizQuestions.length - 1) {
+                showQuizResults();
+            } else {
+                currentIndex++;
+                renderQuizQuestion();
+            }
+        }
+
+        function prevQuizQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderQuizQuestion();
+            }
+        }
+
+        function nextSurveyQuestion() {
+            if (surveyAnswers[currentIndex] === null) {
+                alert('Please select an answer before continuing.');
+                return;
+            }
+            
+            if (currentIndex === surveyQuestions.length - 1) {
+                showSurveyResults();
+            } else {
+                currentIndex++;
+                renderSurveyQuestion();
+            }
+        }
+
+        function prevSurveyQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderSurveyQuestion();
+            }
+        }
+
+        function showQuizResults() {
+            const scoreMap = { "Never": 1, "Rarely": 2, "Sometimes": 3, "Often": 4, "Always": 5 };
+            let totalScore = 0;
+            quizAnswers.forEach(answer => { totalScore += scoreMap[answer]; });
+            const percentage = (totalScore / 50) * 100;
+            
+            let resultLevel = '';
+            let resultMessage = '';
+            let resultColor = '';
+            
+            if (percentage <= 30) {
+                resultLevel = 'Low Risk';
+                resultMessage = 'You are showing low signs of being bullied. Stay aware and maintain healthy relationships.';
+                resultColor = 'text-green-400';
+            } else if (percentage <= 60) {
+                resultLevel = 'Moderate Risk';
+                resultMessage = 'You may be experiencing some bullying behaviors. Consider talking to a trusted adult or counselor.';
+                resultColor = 'text-yellow-400';
+            } else {
+                resultLevel = 'High Risk';
+                resultMessage = 'You are showing strong signs of being bullied. Please reach out to a trusted adult, counselor, or our support resources immediately.';
+                resultColor = 'text-red-400';
+            }
+            
+            const userEmail = localStorage.getItem('current_user_email') || 'Anonymous User';
+            const userName = localStorage.getItem('current_user_name') || userEmail.split('@')[0];
+            
+            // Store data for PDF
+            currentResultsData = {
+                type: 'quiz',
+                userName: userName,
+                userEmail: userEmail,
+                percentage: percentage,
+                totalScore: totalScore,
+                resultLevel: resultLevel,
+                resultMessage: resultMessage,
+                resultColor: resultColor,
+                answers: quizAnswers,
+                questions: quizQuestions,
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString()
+            };
+            
+            // Simple on-screen display (no answers visible)
+            document.getElementById('results-content').innerHTML = `
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 rounded-full ${percentage <= 30 ? 'bg-green-500/20' : percentage <= 60 ? 'bg-yellow-500/20' : 'bg-red-500/20'} flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-chart-simple text-3xl ${percentage <= 30 ? 'text-green-400' : percentage <= 60 ? 'text-yellow-400' : 'text-red-400'}"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white mb-2">Assessment Complete!</h2>
+                    <p class="text-white/60">Thank you for completing the assessment</p>
+                </div>
+                
+                <div class="bg-white/5 rounded-xl p-6 mb-6 text-center">
+                    <h3 class="text-xl font-bold text-white mb-2">Your Risk Level: <span class="${resultColor}">${resultLevel}</span></h3>
+                    <div class="w-full bg-white/10 rounded-full h-4 mb-3">
+                        <div class="bg-brandTeal h-4 rounded-full" style="width: ${percentage}%"></div>
+                    </div>
+                    <p class="text-white/80">Score: ${Math.round(percentage)}% (${totalScore}/50)</p>
+                </div>
+                
+                <div class="bg-white/5 rounded-xl p-6">
+                    <p class="text-white/70 text-center">Click the "Download Full Report (PDF)" button below to see your detailed results with all your answers.</p>
+                </div>
+            `;
+            
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('results-container').classList.remove('hidden');
+        }
+
+        function showSurveyResults() {
+            const userEmail = localStorage.getItem('current_user_email') || 'Anonymous User';
+            const userName = localStorage.getItem('current_user_name') || userEmail.split('@')[0];
+            
+            // Save survey data
+            const surveyData = {
+                userEmail: userEmail,
+                userName: userName,
+                date: new Date().toISOString(),
+                answers: surveyAnswers
+            };
+            
+            let existingSurveys = JSON.parse(localStorage.getItem('bullying_surveys') || '[]');
+            existingSurveys.push(surveyData);
+            localStorage.setItem('bullying_surveys', JSON.stringify(existingSurveys));
+            
+            // Store data for PDF
+            currentResultsData = {
+                type: 'survey',
+                userName: userName,
+                userEmail: userEmail,
+                answers: surveyAnswers,
+                questions: surveyQuestions,
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString()
+            };
+            
+            // Simple on-screen display (no answers visible)
+            document.getElementById('results-content').innerHTML = `
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-chart-line text-purple-400 text-3xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white mb-2">Thank You for Sharing!</h2>
+                    <p class="text-white/60">Your voice helps us fight bullying</p>
+                </div>
+                
+                <div class="bg-white/5 rounded-xl p-6 text-center">
+                    <i class="fa-solid fa-heart text-brandTeal text-3xl mb-3"></i>
+                    <p class="text-white/70">Your survey responses have been recorded anonymously.</p>
+                    <p class="text-white/50 text-sm mt-2">Click the "Download Full Report (PDF)" button below to see a summary of your responses.</p>
+                </div>
+            `;
+            
+            document.getElementById('survey-container').classList.add('hidden');
+            document.getElementById('results-container').classList.remove('hidden');
+        }
+
+        function downloadPDF() {
+            if (!currentResultsData) return;
+            
+            let pdfHTML = '';
+            
+            if (currentResultsData.type === 'quiz') {
+                // Build answers list for PDF
+                let answersList = '';
+                currentResultsData.questions.forEach((q, i) => {
+                    answersList += `
+                        <div style="margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0;">
+                            <p style="font-weight: bold; margin-bottom: 6px; color: #1a1a1a; font-size: 13px;">Q${i+1}: ${q.text}</p>
+                            <p style="color: #0096b4; margin-left: 15px; font-size: 13px;">Answer: ${escapeHtml(currentResultsData.answers[i])}</p>
+                        </div>
+                    `;
+                });
+                
+                pdfHTML = `
+                    <div style="background: white; color: #1a1a1a; padding: 40px; font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;">
+                        <!-- Header -->
+                        <div style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #0096b4; padding-bottom: 20px;">
+                            <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 10px; color: #1a1a1a;">SpeakSafe Assessment Report</h1>
+                            <p style="color: #666;">Generated for: ${escapeHtml(currentResultsData.userName)}</p>
+                            <p style="color: #666;">Date: ${currentResultsData.date} at ${currentResultsData.time}</p>
+                        </div>
+                        
+                        <!-- Results Summary -->
+                        <div style="background: #f5f5f5; border-radius: 12px; padding: 20px; margin-bottom: 25px;">
+                            <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #1a1a1a;">Assessment Summary</h2>
+                            <p style="margin-bottom: 10px;"><strong>Risk Level:</strong> <span style="color: ${currentResultsData.resultColor === 'text-green-400' ? '#10b981' : currentResultsData.resultColor === 'text-yellow-400' ? '#f59e0b' : '#ef4444'}; font-weight: bold;">${currentResultsData.resultLevel}</span></p>
+                            <div style="background: #e0e0e0; border-radius: 10px; height: 12px; margin: 15px 0;">
+                                <div style="background: #0096b4; width: ${currentResultsData.percentage}%; height: 12px; border-radius: 10px;"></div>
+                            </div>
+                            <p style="margin-bottom: 10px;"><strong>Score:</strong> ${Math.round(currentResultsData.percentage)}% (${currentResultsData.totalScore} out of 50)</p>
+                            <p style="color: #555;">${currentResultsData.resultMessage}</p>
+                        </div>
+                        
+                        <!-- All Answers -->
+                        <div style="background: #fafafa; border-radius: 12px; padding: 20px; margin-bottom: 25px; border: 1px solid #e0e0e0;">
+                            <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #1a1a1a;">Your Answers to All Questions</h2>
+                            ${answersList}
+                        </div>
+                        
+                        <!-- Recommendations -->
+                        <div style="background: #f0f9ff; border-radius: 12px; padding: 20px;">
+                            <h2 style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #1a1a1a;">Recommended Next Steps</h2>
+                            <ul style="list-style: none; padding-left: 0;">
+                                <li style="margin-bottom: 10px;">✓ Talk to a trusted adult about your experience</li>
+                                <li style="margin-bottom: 10px;">✓ Document any bullying incidents (screenshots, dates)</li>
+                                <li style="margin-bottom: 10px;">✓ Reach out to our therapists in the Help Center</li>
+                                <li style="margin-bottom: 10px;">✓ Call our crisis helpline: 1-800-273-8255</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Footer -->
+                        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #999; font-size: 11px;">
+                            <p>© 2026 SpeakSafe - Empowering safer digital spaces</p>
+                            <p style="margin-top: 5px;">This assessment is for informational purposes only. For emergencies, please contact a crisis helpline immediately.</p>
+                        </div>
+                    </div>
+                `;
+            } 
+            else if (currentResultsData.type === 'survey') {
+                // Build answers list for PDF
+                let answersList = '';
+                currentResultsData.questions.forEach((q, i) => {
+                    answersList += `
+                        <div style="margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0;">
+                            <p style="font-weight: bold; margin-bottom: 6px; color: #1a1a1a; font-size: 13px;">${i+1}. ${q.text}</p>
+                            <p style="color: #0096b4; margin-left: 15px; font-size: 13px;">Answer: ${escapeHtml(currentResultsData.answers[i])}</p>
+                        </div>
+                    `;
+                });
+                
+                pdfHTML = `
+                    <div style="background: white; color: #1a1a1a; padding: 40px; font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;">
+                        <!-- Header -->
+                        <div style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #0096b4; padding-bottom: 20px;">
+                            <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 10px; color: #1a1a1a;">Bullying Survey Report</h1>
+                            <p style="color: #666;">Submitted by: ${escapeHtml(currentResultsData.userName)}</p>
+                            <p style="color: #666;">Date: ${currentResultsData.date} at ${currentResultsData.time}</p>
+                        </div>
+                        
+                        <!-- Thank You Message -->
+                        <div style="background: #f0f9ff; border-radius: 12px; padding: 20px; margin-bottom: 25px; text-align: center;">
+                            <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 10px; color: #1a1a1a;">Thank You for Sharing</h2>
+                            <p style="color: #555;">Your responses help us understand bullying patterns better and improve our support services.</p>
+                        </div>
+                        
+                        <!-- All Answers -->
+                        <div style="background: #fafafa; border-radius: 12px; padding: 20px; margin-bottom: 25px; border: 1px solid #e0e0e0;">
+                            <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #1a1a1a;">Your Survey Responses</h2>
+                            ${answersList}
+                        </div>
+                        
+                        <!-- Resources -->
+                        <div style="background: #f5f5f5; border-radius: 12px; padding: 20px;">
+                            <h2 style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #1a1a1a;">Resources & Support</h2>
+                            <ul style="list-style: none; padding-left: 0;">
+                                <li style="margin-bottom: 8px;">📞 Crisis Helpline: 1-800-273-8255</li>
+                                <li style="margin-bottom: 8px;">💬 Text "HOME" to 741741</li>
+                                <li style="margin-bottom: 8px;">🌐 Visit our Help Center for therapist support</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Footer -->
+                        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #999; font-size: 11px;">
+                            <p>© 2026 SpeakSafe - Empowering safer digital spaces</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Create a temporary div to generate PDF from
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = pdfHTML;
+            tempDiv.style.position = 'absolute';
+            tempDiv.style.left = '-9999px';
+            document.body.appendChild(tempDiv);
+            
+            const opt = {
+                margin: [0.5, 0.5, 0.5, 0.5],
+                filename: `SpeakSafe_${currentResultsData.type === 'quiz' ? 'Assessment' : 'Survey'}_${new Date().toISOString().split('T')[0]}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, backgroundColor: '#ffffff' },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            
+            html2pdf().set(opt).from(tempDiv).save().then(() => {
+                document.body.removeChild(tempDiv);
+            });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
