@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakSafe - Help Center & Therapists</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandDark: '#030b14', 
+                        brandTeal: '#00b4d8', 
+                        brandTealHover: '#0096b4',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .dot-matrix {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .glass-panel {
+            background: rgba(4, 15, 26, 0.6);
+            backdrop-filter: blur(16px);
+        }
+        .therapist-card {
+            transition: all 0.3s ease;
+        }
+        .therapist-card:hover {
+            transform: translateY(-4px);
+            border-color: #00b4d8;
+        }
+    </style>
+</head>
+<body class="bg-brandDark text-white antialiased dot-matrix">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full z-40 bg-brandDark/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-8 h-8 rounded-xl bg-transparent border-2 border-brandTeal flex items-center justify-center">
+                    <i class="fa-solid fa-shield-halved text-brandTeal text-sm"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-white">
+                    Speak<span class="text-brandTeal">safe</span>
+                </span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="text-white/70 hover:text-brandTeal transition-colors text-sm">Home</a>
+                <a href="mapfull.html" class="text-white/70 hover:text-brandTeal transition-colors text-sm">Safety Map</a>
+                <a href="help.html" class="text-brandTeal font-semibold text-sm">Help Center</a>
+            </nav>
+            <div id="auth-status" class="flex items-center gap-3">
+                <button onclick="window.location.href='index.html'" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-4 py-2 rounded-full text-sm">
+                    Back to Home
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Help Content -->
+    <section class="pt-28 pb-12 px-6">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Crisis Resources Section -->
+            <div class="mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 text-center">Help Center</h1>
+                <p class="text-white/60 text-center max-w-2xl mx-auto mb-10">Immediate support resources and professional therapists ready to help</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div class="glass-panel rounded-2xl p-6 border border-white/10 text-center">
+                        <div class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-phone text-red-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">24/7 Crisis Helpline</h3>
+                        <p class="text-3xl font-bold text-brandTeal mb-2">1-800-273-8255</p>
+                        <p class="text-white/50 text-sm">National Suicide Prevention Lifeline</p>
+                    </div>
+                    
+                    <div class="glass-panel rounded-2xl p-6 border border-white/10 text-center">
+                        <div class="w-16 h-16 rounded-full bg-brandTeal/20 flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-message text-brandTeal text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Text Support</h3>
+                        <p class="text-3xl font-bold text-brandTeal mb-2">741741</p>
+                        <p class="text-white/50 text-sm">Text "HOME" for crisis support</p>
+                    </div>
+                    
+                    <div class="glass-panel rounded-2xl p-6 border border-white/10 text-center">
+                        <div class="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-globe text-purple-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Online Resources</h3>
+                        <p class="text-brandTeal font-semibold mb-2">StopBullying.gov</p>
+                        <p class="text-white/50 text-sm">Cyberbullying prevention guides</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Therapists Directory -->
+            <div>
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-stethoscope text-brandTeal"></i>
+                        Registered Therapists
+                    </h2>
+                    <button onclick="openAddTherapistModal()" class="bg-brandTeal/20 hover:bg-brandTeal/30 text-brandTeal font-semibold px-4 py-2 rounded-xl text-sm transition-all border border-brandTeal/30">
+                        <i class="fa-solid fa-plus"></i> Are you a therapist? Add yourself
+                    </button>
+                </div>
+                
+                <div id="therapists-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="text-white/40 text-center py-12 col-span-full">Loading therapists...</div>
+                </div>
+            </div>
+
+            <!-- Address & Additional Resources -->
+            <div class="mt-16 glass-panel rounded-2xl p-8 border border-white/10">
+                <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                    <i class="fa-solid fa-building text-brandTeal"></i>
+                    Visit Us In Person
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <p class="text-white/80 mb-2"><i class="fa-solid fa-location-dot text-brandTeal mr-2"></i> <strong>Main Office:</strong></p>
+                        <p class="text-white/60 text-sm mb-4">
+                            SpeakSafe Headquarters<br>
+                            123 Digital Defense Avenue<br>
+                            Suite 400, Tech Plaza<br>
+                            Pristina, Kosovo 10000
+                        </p>
+                        <p class="text-white/80 mb-2"><i class="fa-solid fa-clock text-brandTeal mr-2"></i> <strong>Office Hours:</strong></p>
+                        <p class="text-white/60 text-sm">
+                            Monday - Friday: 9:00 AM - 8:00 PM<br>
+                            Saturday: 10:00 AM - 4:00 PM<br>
+                            Sunday: Closed (Crisis line still available)
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-white/80 mb-2"><i class="fa-solid fa-envelope text-brandTeal mr-2"></i> <strong>Contact Info:</strong></p>
+                        <p class="text-white/60 text-sm mb-2">
+                            Email: <a href="mailto:support@speaksafe.org" class="text-brandTeal hover:underline">support@speaksafe.org</a><br>
+                            Phone: <a href="tel:+38344123456" class="text-brandTeal hover:underline">+383 44 123 456</a>
+                        </p>
+                        <p class="text-white/80 mb-2 mt-4"><i class="fa-solid fa-hand-holding-heart text-brandTeal mr-2"></i> <strong>Partners:</strong></p>
+                        <p class="text-white/60 text-sm">
+                            - Kosovo Mental Health Center<br>
+                            - Balkan Anti-Bullying Initiative<br>
+                            - Digital Safety Alliance
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add Therapist Modal -->
+    <div id="add-therapist-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-brandDark/90 backdrop-blur-md">
+        <div class="glass-panel w-full max-w-md rounded-2xl p-6 relative border border-white/10" style="background: rgba(4, 15, 26, 0.95);">
+            <button onclick="closeAddTherapistModal()" class="absolute top-4 right-4 text-white/40 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 class="text-xl font-bold text-white mb-4">Add Yourself as a Therapist</h3>
+            <form id="add-therapist-form" onsubmit="addTherapist(event)">
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-white/50 mb-1">Full Name</label>
+                    <input type="text" id="therapist-name" required placeholder="Dr. Jane Smith" class="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-white text-sm focus:outline-none focus:border-brandTeal/50">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-white/50 mb-1">Specialization</label>
+                    <input type="text" id="therapist-specialization" required placeholder="e.g., Youth Counseling, Cyberbullying, Anxiety" class="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-white text-sm focus:outline-none focus:border-brandTeal/50">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-white/50 mb-1">Contact Email</label>
+                    <input type="email" id="therapist-email" required placeholder="therapist@clinic.com" class="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-white text-sm focus:outline-none focus:border-brandTeal/50">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-white/50 mb-1">Phone Number</label>
+                    <input type="tel" id="therapist-phone" placeholder="+383 XX XXX XXX" class="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-white text-sm focus:outline-none focus:border-brandTeal/50">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-white/50 mb-1">Bio / Experience</label>
+                    <textarea id="therapist-bio" rows="2" required placeholder="Brief description of your experience and approach..." class="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-white text-sm focus:outline-none focus:border-brandTeal/50"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-white/50 mb-1">Invite Code (Required)</label>
+                    <input type="text" id="therapist-invite-code" required placeholder="Enter invite code" class="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-white text-sm focus:outline-none focus:border-brandTeal/50">
+                    <p class="text-xs text-white/40 mt-1">Demo code: <span class="text-brandTeal">THERAPIST_2026</span></p>
+                </div>
+                <button type="submit" class="w-full bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold py-2 rounded-xl text-sm transition-all">
+                    Register as Therapist
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Load therapists from localStorage
+        let therapists = JSON.parse(localStorage.getItem('registered_therapists') || '[]');
+        
+        // Sample default therapists
+        if (therapists.length === 0) {
+            therapists = [
+                {
+                    id: 1,
+                    name: "Dr. Sarah Johnson",
+                    specialization: "Youth Counseling & Cyberbullying",
+                    email: "sarah.johnson@speaksafe.org",
+                    phone: "+383 44 111 222",
+                    bio: "Licensed therapist with 10+ years of experience helping teens navigate online harassment and building digital resilience.",
+                    date: new Date().toISOString()
+                },
+                {
+                    id: 2,
+                    name: "Prof. Michael Brown",
+                    specialization: "Digital Safety & Mental Health",
+                    email: "michael.brown@speaksafe.org",
+                    phone: "+383 44 333 444",
+                    bio: "Clinical psychologist specializing in adolescent mental health and cyberbullying prevention strategies.",
+                    date: new Date().toISOString()
+                },
+                {
+                    id: 3,
+                    name: "Dr. Elena Petrov",
+                    specialization: "Trauma & Recovery",
+                    email: "elena.petrov@speaksafe.org",
+                    phone: "+383 44 555 666",
+                    bio: "Trauma-informed therapist helping young people recover from bullying experiences and rebuild confidence.",
+                    date: new Date().toISOString()
+                }
+            ];
+            localStorage.setItem('registered_therapists', JSON.stringify(therapists));
+        }
+        
+        function displayTherapists() {
+            const container = document.getElementById('therapists-list');
+            if (therapists.length === 0) {
+                container.innerHTML = '<div class="text-white/40 text-center py-12 col-span-full">No therapists registered yet. Be the first to add yourself!</div>';
+                return;
+            }
+            
+            container.innerHTML = therapists.map(therapist => `
+                <div class="therapist-card glass-panel rounded-2xl p-6 border border-white/10">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-full bg-brandTeal/20 flex items-center justify-center">
+                            <i class="fa-solid fa-user-md text-brandTeal text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-bold text-white">${escapeHtml(therapist.name)}</h3>
+                            <p class="text-brandTeal text-xs">${escapeHtml(therapist.specialization)}</p>
+                        </div>
+                    </div>
+                    <p class="text-white/60 text-sm mb-3">${escapeHtml(therapist.bio)}</p>
+                    <div class="space-y-1 text-xs">
+                        <p class="text-white/40"><i class="fa-solid fa-envelope mr-2"></i>${escapeHtml(therapist.email)}</p>
+                        ${therapist.phone ? `<p class="text-white/40"><i class="fa-solid fa-phone mr-2"></i>${escapeHtml(therapist.phone)}</p>` : ''}
+                    </div>
+                    <button onclick="contactTherapist('${escapeHtml(therapist.email)}')" class="mt-4 w-full bg-brandTeal/10 hover:bg-brandTeal/20 text-brandTeal font-semibold py-2 rounded-xl text-sm transition-all border border-brandTeal/30">
+                        <i class="fa-solid fa-message"></i> Contact
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function openAddTherapistModal() {
+            document.getElementById('add-therapist-modal').classList.remove('hidden');
+            document.getElementById('add-therapist-modal').style.display = 'flex';
+        }
+        
+        function closeAddTherapistModal() {
+            document.getElementById('add-therapist-modal').classList.add('hidden');
+            document.getElementById('add-therapist-modal').style.display = 'none';
+        }
+        
+        function addTherapist(event) {
+            event.preventDefault();
+            
+            const inviteCode = document.getElementById('therapist-invite-code').value;
+            if (inviteCode !== 'THERAPIST_2026') {
+                alert('❌ Invalid invite code! Please use: THERAPIST_2026');
+                return;
+            }
+            
+            const newTherapist = {
+                id: Date.now(),
+                name: document.getElementById('therapist-name').value,
+                specialization: document.getElementById('therapist-specialization').value,
+                email: document.getElementById('therapist-email').value,
+                phone: document.getElementById('therapist-phone').value,
+                bio: document.getElementById('therapist-bio').value,
+                date: new Date().toISOString()
+            };
+            
+            therapists.push(newTherapist);
+            localStorage.setItem('registered_therapists', JSON.stringify(therapists));
+            
+            closeAddTherapistModal();
+            document.getElementById('add-therapist-form').reset();
+            displayTherapists();
+            
+            alert('✅ You have been registered as a therapist! Your profile will appear in the directory.');
+        }
+        
+        function contactTherapist(email) {
+            window.location.href = `mailto:${email}?subject=SpeakSafe%20Help%20Request`;
+        }
+        
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+        
+        // Initial load
+        displayTherapists();
+    </script>
+</body>
+</html>
