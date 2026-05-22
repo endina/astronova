@@ -29,12 +29,48 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
+        .headline-bg {
+            position: relative;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            z-index: 0;
+        }
+        .headline-bg::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 0);
+            background-size: 10px 10px;
+            opacity: 0.16;
+            z-index: -1;
+            border-radius: 1rem;
+            pointer-events: none;
+        }
         .hero-glow {
-            background: radial-gradient(circle at 50% 35%, rgba(0, 180, 216, 0.15) 0%, rgba(3, 11, 20, 1) 65%);
+            background: radial-gradient(circle at 50% 20%, rgba(0, 180, 216, 0.18) 0%, rgba(3, 11, 20, 1) 60%);
         }
         .dot-matrix {
-            background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
-            background-size: 28px 28px;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
+            background-size: 22px 22px;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            padding: 0.8rem 1.25rem;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.84);
+            backdrop-filter: blur(12px);
+        }
+        .hero-badge span {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 999px;
+            background: #00b4d8;
+            box-shadow: 0 0 18px rgba(0,180,216,0.45);
         }
         .glass-panel {
             background: rgba(255, 255, 255, 0.03);
@@ -47,47 +83,51 @@
 <body class="bg-brandDark text-white antialiased dot-matrix min-h-screen">
 
     <header class="fixed top-0 left-0 w-full z-40 bg-brandDark/80 backdrop-blur-md border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-6 h-28 flex items-center justify-between">
             
             <a href="#home" class="flex items-center gap-3 group">
                 <div class="w-9 h-9 rounded-xl bg-transparent border-2 border-brandTeal flex items-center justify-center shadow-[0_0_15px_rgba(0,180,216,0.3)] group-hover:scale-105 transition-transform">
                     <i class="fa-solid fa-shield-halved text-brandTeal text-sm"></i>
                 </div>
-                <span class="text-xl font-bold tracking-tight text-white">
+                <span class="text-2xl font-bold tracking-tight text-white">
                     Speak<span class="text-brandTeal">safe</span>
                 </span>
             </a>
 
             <nav class="hidden md:flex items-center gap-8">
-                <a href="#home" class="text-sm font-medium text-white/70 hover:text-brandTeal transition-colors">Home</a>
-                <a href="#map" class="text-sm font-medium text-white/70 hover:text-brandTeal transition-colors">Map</a>
-                <a href="#resources" class="text-sm font-medium text-white/70 hover:text-brandTeal transition-colors">Resources</a>
-                <a href="#help" class="text-sm font-medium text-white/70 hover:text-brandTeal transition-colors">Help</a>
+                <a href="#home" class="text-base font-medium text-white/70 hover:text-brandTeal transition-colors">Home</a>
+                <a href="#map" class="text-base font-medium text-white/70 hover:text-brandTeal transition-colors">Map</a>
+                <a href="#resources" class="text-base font-medium text-white/70 hover:text-brandTeal transition-colors">Resources</a>
+                <a href="#help" class="text-base font-medium text-white/70 hover:text-brandTeal transition-colors">Help</a>
             </nav>
 
-            <div id="auth-nav-zone">
-                <button onclick="openAuthModal()" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all shadow-[0_4px_20px_rgba(0,180,216,0.25)] hover:scale-105">
-                    <i class="fa-solid fa-user-shield"></i>
-                    <span id="auth-btn-text">Sign In / Up</span>
+            <div id="auth-nav-zone" class="flex items-center gap-3">
+                <button onclick="openAuthModal('signin')" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all border border-white/10">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    Sign In
+                </button>
+                <button onclick="openAuthModal('signup')" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all shadow-[0_4px_20px_rgba(0,180,216,0.25)] hover:scale-105">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Sign Up
                 </button>
             </div>
         </div>
     </header>
 
-    <section id="home" class="hero-glow min-h-screen flex flex-col items-center justify-center px-6 pt-20">
-        <div class="max-w-4xl text-center space-y-8">
-            
-            <div class="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full text-xs text-white/80 tracking-wide backdrop-blur-sm">
-                <span class="w-2 h-2 rounded-full bg-brandTeal animate-pulse"></span>
-                Digital Defenders Hackathon Project
+    <section id="home" class="hero-glow min-h-screen flex flex-col items-center justify-center px-6 pt-28">
+        <div class="max-w-5xl text-center space-y-8">
+
+            <div class="hero-badge">
+                <span></span>
+                Building safer digital spaces, together
             </div>
 
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.12]">
+            <h1 class="headline-bg text-5xl md:text-7xl lg:text-[4.75rem] font-extrabold tracking-tight text-white leading-[1.06]">
                 Speak up. <span class="text-brandTeal">Stay safe.</span><br>
                 End cyberbullying.
             </h1>
 
-            <p class="text-lg md:text-xl text-white/60 max-w-2xl mx-auto font-light leading-relaxed">
+            <p class="text-base md:text-lg text-white/70 max-w-3xl mx-auto font-light leading-relaxed">
                 Empowering schools and online users with real-time browser safety assets, transparent safety mapping analytics, and open support environments.
             </p>
 
@@ -147,8 +187,26 @@
     <script>
         let isSignUpMode = true;
 
-        function openAuthModal() {
+        function openAuthModal(mode) {
+            isSignUpMode = (mode === 'signup');
+            const title = document.getElementById('modal-title');
+            const subtitle = document.getElementById('modal-subtitle');
+            const prompt = document.getElementById('switch-prompt');
+            const actionBtn = document.getElementById('switch-action-btn');
             const modal = document.getElementById('auth-modal');
+
+            if (isSignUpMode) {
+                title.innerText = "Welcome Defender";
+                subtitle.innerText = "Create an account to track reporting statistics.";
+                prompt.innerText = "Already have a defender account?";
+                actionBtn.innerText = "Log In";
+            } else {
+                title.innerText = "Welcome Back";
+                subtitle.innerText = "Access your digital safety profile hub.";
+                prompt.innerText = "New to the platform?";
+                actionBtn.innerText = "Create Account";
+            }
+
             modal.classList.remove('invisible', 'opacity-0');
         }
 
