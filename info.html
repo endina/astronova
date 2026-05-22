@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#030b14">
+
+    <title>SpeakSafe - Bullying Information & Resources</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandDark: '#030b14',
+                        brandTeal: '#00b4d8',
+                        brandTealHover: '#0096b4',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .dot-matrix {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+
+        .glass-panel {
+            background: rgba(4, 15, 26, 0.6);
+            backdrop-filter: blur(16px);
+        }
+
+        .article-card {
+            transition: all 0.3s ease;
+        }
+
+        .article-card:hover {
+            transform: translateY(-4px);
+            border-color: #00b4d8;
+        }
+
+        .info-section {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-brandDark text-white antialiased dot-matrix">
+
+    <!-- HEADER -->
+    <header class="fixed top-0 left-0 w-full z-40 bg-brandDark/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="./index.html" class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl border-2 border-brandTeal flex items-center justify-center">
+                    <i class="fa-solid fa-shield-halved text-brandTeal text-sm"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight">
+                    Speak<span class="text-brandTeal">Safe</span>
+                </span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="./index.html" class="text-white/70 hover:text-brandTeal transition-colors text-sm">Home</a>
+                <a href="./mapfull.html" class="text-white/70 hover:text-brandTeal transition-colors text-sm">Safety Map</a>
+                <a href="./help.html" class="text-white/70 hover:text-brandTeal transition-colors text-sm">Help Center</a>
+                <a href="./quiz.html" class="text-white/70 hover:text-brandTeal transition-colors text-sm">Assessment</a>
+                <a href="./info.html" class="text-brandTeal font-semibold text-sm">Info Hub</a>
+            </nav>
+            <button onclick="location.href='./index.html'" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-4 py-2 rounded-full text-sm">
+                Back to Home
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <section class="pt-32 pb-16 px-6">
+        <div class="max-w-6xl mx-auto">
+
+            <!-- Hero Section -->
+            <div class="text-center mb-12 info-section">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
+                    Understanding <span class="text-brandTeal">Bullying</span>
+                </h1>
+                <p class="text-white/60 text-lg max-w-3xl mx-auto">
+                    Information, resources, and guidance to help you recognize, respond to, and prevent bullying
+                </p>
+            </div>
+
+            <!-- What is Bullying Section -->
+            <div class="glass-panel rounded-2xl p-8 mb-8 info-section">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 rounded-full bg-brandTeal/20 flex items-center justify-center">
+                        <i class="fa-solid fa-circle-info text-brandTeal text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white">What is Bullying?</h2>
+                </div>
+                <p class="text-white/80 leading-relaxed mb-4">
+                    Bullying is unwanted, aggressive behavior among school-aged children and young adults that involves a real or perceived power imbalance. The behavior is repeated, or has the potential to be repeated, over time.
+                </p>
+                <p class="text-white/80 leading-relaxed">
+                    Both kids who are bullied and who bully others may have serious, lasting problems. Bullying includes actions such as making threats, spreading rumors, attacking someone physically or verbally, and excluding someone from a group on purpose.
+                </p>
+            </div>
+
+            <!-- Types of Bullying - Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                
+                <!-- Physical Bullying -->
+                <div class="glass-panel rounded-2xl p-6 info-section">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                            <i class="fa-solid fa-fist-raised text-red-400 text-lg"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Physical Bullying</h3>
+                    </div>
+                    <p class="text-white/70 text-sm leading-relaxed">
+                        Involves hurting a person's body or possessions. This includes hitting, kicking, tripping, pushing, or damaging property.
+                    </p>
+                </div>
+
+                <!-- Verbal Bullying -->
+                <div class="glass-panel rounded-2xl p-6 info-section">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center">
+                            <i class="fa-solid fa-comment-dots text-yellow-400 text-lg"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Verbal Bullying</h3>
+                    </div>
+                    <p class="text-white/70 text-sm leading-relaxed">
+                        Involves saying or writing mean things. This includes teasing, name-calling, inappropriate sexual comments, taunting, and threatening to cause harm.
+                    </p>
+                </div>
+
+                <!-- Social Bullying -->
+                <div class="glass-panel rounded-2xl p-6 info-section">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+                            <i class="fa-solid fa-users-slash text-purple-400 text-lg"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Social Bullying</h3>
+                    </div>
+                    <p class="text-white/70 text-sm leading-relaxed">
+                        Involves hurting someone's reputation or relationships. This includes leaving someone out on purpose, telling others not to be friends with someone, spreading rumors, and embarrassing someone in public.
+                    </p>
+                </div>
+
+                <!-- Cyberbullying -->
+                <div class="glass-panel rounded-2xl p-6 info-section">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-brandTeal/20 flex items-center justify-center">
+                            <i class="fa-solid fa-laptop-code text-brandTeal text-lg"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Cyberbullying</h3>
+                    </div>
+                    <p class="text-white/70 text-sm leading-relaxed">
+                        Involves bullying that takes place over digital devices. This includes sending, posting, or sharing negative, harmful, false, or mean content about someone else on social media, messaging platforms, or gaming sites.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Warning Signs Section -->
+            <div class="glass-panel rounded-2xl p-8 mb-8 info-section">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center">
+                        <i class="fa-solid fa-triangle-exclamation text-yellow-400 text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white">Warning Signs of Bullying</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-brandTeal mb-3">Signs a child is being bullied:</h3>
+                        <ul class="space-y-2 text-white/70 text-sm">
+                            <li><i class="fa-solid fa-circle-check text-brandTeal text-xs mr-2"></i> Unexplainable injuries</li>
+                            <li><i class="fa-solid fa-circle-check text-brandTeal text-xs mr-2"></i> Lost or destroyed clothing, books, electronics</li>
+                            <li><i class="fa-solid fa-circle-check text-brandTeal text-xs mr-2"></i> Frequent headaches or stomach aches</li>
+                            <li><i class="fa-solid fa-circle-check text-brandTeal text-xs mr-2"></i> Changes in eating habits</li>
+                            <li><i class="fa-solid fa-circle-check text-brandTeal text-xs mr-2"></i> Difficulty sleeping or frequent nightmares</li>
+                            <li><i class="fa-solid fa-circle-check text-brandTeal text-xs mr-2"></i> Declining grades or loss of interest in school</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-brandTeal mb-3">Signs a child is bullying others:</h3>
+                        <ul class="space-y-2 text-white/70 text-sm">
+                            <li><i class="fa-solid fa-circle-check text-brandTeal text-xs mr-2"></i> Getting into physical or verbal fights</li>
+                            <li><i class="fa-solid fa-circle-check text-brandTeal text-xs mr-2"></i> Having friends who bully others</li>
+                            <li><i class="fa-solid fa-circle-check text-brandTeal text-xs mr-2"></i> Increasingly aggressive behavior</li>
+                            <li><i class="fa-solid fa-circle-check text-brandTeal text-xs mr-2"></i> Frequent school detentions or suspensions</li>
+                            <li><i class="fa-solid fa-circle-check text-brandTeal text-xs mr-2"></i> Blaming others for their problems</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Section -->
+            <div class="glass-panel rounded-2xl p-8 mb-8 info-section">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+                        <i class="fa-solid fa-chart-line text-blue-400 text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white">Bullying Statistics</h2>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                    <div>
+                        <div class="text-3xl md:text-4xl font-bold text-brandTeal mb-2">1 in 3</div>
+                        <p class="text-white/60 text-xs">students report being bullied at school</p>
+                    </div>
+                    <div>
+                        <div class="text-3xl md:text-4xl font-bold text-brandTeal mb-2">64%</div>
+                        <p class="text-white/60 text-xs">of bullied children do not report it</p>
+                    </div>
+                    <div>
+                        <div class="text-3xl md:text-4xl font-bold text-brandTeal mb-2">70%</div>
+                        <p class="text-white/60 text-xs">of students say they have witnessed bullying</p>
+                    </div>
+                    <div>
+                        <div class="text-3xl md:text-4xl font-bold text-brandTeal mb-2">41%</div>
+                        <p class="text-white/60 text-xs">of students who reported bullying say it would happen again</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How to Respond Section -->
+            <div class="glass-panel rounded-2xl p-8 mb-8 info-section">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <i class="fa-solid fa-hand-peace text-green-400 text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white">How to Respond to Bullying</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 rounded-full bg-brandTeal/20 flex items-center justify-center mx-auto mb-3">
+                            <span class="text-2xl font-bold text-brandTeal">1</span>
+                        </div>
+                        <h3 class="font-semibold text-white mb-2">Walk Away</h3>
+                        <p class="text-white/60 text-xs">Ignore the bully and walk away confidently. Bullies are often looking for a reaction.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 rounded-full bg-brandTeal/20 flex items-center justify-center mx-auto mb-3">
+                            <span class="text-2xl font-bold text-brandTeal">2</span>
+                        </div>
+                        <h3 class="font-semibold text-white mb-2">Tell Someone</h3>
+                        <p class="text-white/60 text-xs">Report the bullying to a trusted adult, teacher, or parent. You don't have to face it alone.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 rounded-full bg-brandTeal/20 flex items-center justify-center mx-auto mb-3">
+                            <span class="text-2xl font-bold text-brandTeal">3</span>
+                        </div>
+                        <h3 class="font-semibold text-white mb-2">Stay Safe</h3>
+                        <p class="text-white/60 text-xs">Use safety strategies like staying near adults or groups of friends.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Articles Section -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center">
+                        <i class="fa-solid fa-newspaper text-orange-400 text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white">Featured Articles</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Article 1 -->
+                    <div class="article-card glass-panel rounded-2xl p-6 border border-white/10 cursor-pointer hover:border-brandTeal/50" onclick="window.open('https://www.stopbullying.gov/cyberbullying/what-is-it', '_blank')">
+                        <div class="w-12 h-12 rounded-full bg-brandTeal/20 flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-laptop text-brandTeal text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">What Is Cyberbullying?</h3>
+                        <p class="text-white/50 text-sm mb-3">StopBullying.gov</p>
+                        <p class="text-white/60 text-xs">Learn about the different forms of cyberbullying and how to prevent it from happening.</p>
+                        <div class="mt-4 flex items-center text-brandTeal text-sm">
+                            Read More <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                        </div>
+                    </div>
+
+                    <!-- Article 2 -->
+                    <div class="article-card glass-panel rounded-2xl p-6 border border-white/10 cursor-pointer hover:border-brandTeal/50" onclick="window.open('https://www.stopbullying.gov/prevention/how-to-prevent-bullying', '_blank')">
+                        <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-shield-heart text-green-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">How to Prevent Bullying</h3>
+                        <p class="text-white/50 text-sm mb-3">StopBullying.gov</p>
+                        <p class="text-white/60 text-xs">Effective strategies for parents, teachers, and students to prevent bullying before it starts.</p>
+                        <div class="mt-4 flex items-center text-brandTeal text-sm">
+                            Read More <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                        </div>
+                    </div>
+
+                    <!-- Article 3 -->
+                    <div class="article-card glass-panel rounded-2xl p-6 border border-white/10 cursor-pointer hover:border-brandTeal/50" onclick="window.open('https://www.pacer.org/bullying/resources/info-facts.asp', '_blank')">
+                        <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-chart-simple text-purple-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Bullying Statistics & Facts</h3>
+                        <p class="text-white/50 text-sm mb-3">PACER's National Bullying Center</p>
+                        <p class="text-white/60 text-xs">Key facts and statistics about bullying in schools and online environments.</p>
+                        <div class="mt-4 flex items-center text-brandTeal text-sm">
+                            Read More <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                        </div>
+                    </div>
+
+                    <!-- Article 4 -->
+                    <div class="article-card glass-panel rounded-2xl p-6 border border-white/10 cursor-pointer hover:border-brandTeal/50" onclick="window.open('https://www.psychologytoday.com/us/basics/bullying', '_blank')">
+                        <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-brain text-red-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">The Psychology of Bullying</h3>
+                        <p class="text-white/50 text-sm mb-3">Psychology Today</p>
+                        <p class="text-white/60 text-xs">Understanding why bullying happens and the psychological impact on victims and bullies.</p>
+                        <div class="mt-4 flex items-center text-brandTeal text-sm">
+                            Read More <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                        </div>
+                    </div>
+
+                    <!-- Article 5 -->
+                    <div class="article-card glass-panel rounded-2xl p-6 border border-white/10 cursor-pointer hover:border-brandTeal/50" onclick="window.open('https://www.commonsensemedia.org/articles/cyberbullying-what-parents-can-do-to-help', '_blank')">
+                        <div class="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-users text-yellow-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">What Parents Can Do</h3>
+                        <p class="text-white/50 text-sm mb-3">Common Sense Media</p>
+                        <p class="text-white/60 text-xs">A guide for parents to help their children deal with cyberbullying effectively.</p>
+                        <div class="mt-4 flex items-center text-brandTeal text-sm">
+                            Read More <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                        </div>
+                    </div>
+
+                    <!-- Article 6 -->
+                    <div class="article-card glass-panel rounded-2xl p-6 border border-white/10 cursor-pointer hover:border-brandTeal/50" onclick="window.open('https://www.edutopia.org/article/preventing-bullying-classroom', '_blank')">
+                        <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-chalkboard-user text-blue-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Preventing Bullying in the Classroom</h3>
+                        <p class="text-white/50 text-sm mb-3">Edutopia</p>
+                        <p class="text-white/60 text-xs">Strategies for teachers to create a safe and inclusive classroom environment.</p>
+                        <div class="mt-4 flex items-center text-brandTeal text-sm">
+                            Read More <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Additional Resources Section -->
+            <div class="glass-panel rounded-2xl p-8 info-section">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 rounded-full bg-teal-500/20 flex items-center justify-center">
+                        <i class="fa-solid fa-phone-alt text-teal-400 text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white">Get Help Immediately</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold text-brandTeal mb-3">Crisis Helplines</h3>
+                        <ul class="space-y-2 text-white/70 text-sm">
+                            <li><i class="fa-solid fa-phone text-brandTeal mr-2"></i> National Suicide Prevention Lifeline: <strong class="text-white">988</strong></li>
+                            <li><i class="fa-solid fa-comment text-brandTeal mr-2"></i> Crisis Text Line: Text <strong class="text-white">HOME</strong> to <strong class="text-white">741741</strong></li>
+                            <li><i class="fa-solid fa-shield-halved text-brandTeal mr-2"></i> StopBullying.gov Helpline: <strong class="text-white">1-800-273-8255</strong></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-brandTeal mb-3">Online Resources</h3>
+                        <ul class="space-y-2 text-white/70 text-sm">
+                            <li><i class="fa-solid fa-globe text-brandTeal mr-2"></i> <a href="https://www.stopbullying.gov" target="_blank" class="hover:text-brandTeal">www.stopbullying.gov</a></li>
+                            <li><i class="fa-solid fa-globe text-brandTeal mr-2"></i> <a href="https://www.pacer.org/bullying" target="_blank" class="hover:text-brandTeal">www.pacer.org/bullying</a></li>
+                            <li><i class="fa-solid fa-globe text-brandTeal mr-2"></i> <a href="https://www.cybersmile.org" target="_blank" class="hover:text-brandTeal">www.cybersmile.org</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#02080f] border-t border-white/10 pt-12 pb-8 px-6 mt-12">
+        <div class="max-w-6xl mx-auto text-center">
+            <p class="text-white/30 text-xs">© 2026 SpeakSafe - Empowering safer digital spaces</p>
+            <p class="text-white/20 text-xs mt-2">Together we can stop bullying</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
