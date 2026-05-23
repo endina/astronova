@@ -26,6 +26,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -71,14 +76,18 @@
                 <a href="index.html" class="text-white/70 hover:text-brandTeal transition-colors">Home</a>
                 <a href="mapful.html" class="text-white/70 hover:text-brandTeal transition-colors">Map</a>
                 <a href="help.html" class="text-white/70 hover:text-brandTeal transition-colors">Help</a>
+                <a href="chat.html" class="bg-brandTeal/20 border border-brandTeal/40 text-brandTeal hover:bg-brandTeal hover:text-brandDark transition-all px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
+                    <i class="fa-solid fa-comment-dots"></i>
+                    Chat
+                </a>
             </nav>
 
             <div id="auth-nav-zone" class="flex items-center gap-3">
-                <button onclick="openAuthModal('signin')" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all border border-white/10">
+                <button onclick="window.location.href='index.html'" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all border border-white/10">
                     <i class="fa-solid fa-right-to-bracket"></i>
                     Sign In
                 </button>
-                <button onclick="openAuthModal('signup')" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all shadow-[0_4px_20px_rgba(0,180,216,0.25)] hover:scale-105">
+                <button onclick="window.location.href='index.html'" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all shadow-[0_4px_20px_rgba(0,180,216,0.25)] hover:scale-105">
                     <i class="fa-solid fa-user-plus"></i>
                     Sign Up
                 </button>
@@ -184,21 +193,79 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Function to get current user (always check localStorage when needed)
+        // ============ FIREBASE CONFIGURATION ============
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWiGfigIyK_QwIPw91XWMu01UxSZs9opc",
+            authDomain: "speaksafe-3c536.firebaseapp.com",
+            projectId: "speaksafe-3c536",
+            storageBucket: "speaksafe-3c536.firebasestorage.app",
+            messagingSenderId: "545860403617",
+            appId: "1:545860403617:web:60c47d0ad67df9bd53cbe0",
+            measurementId: "G-S3M028G8MS"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Function to get current user with Firebase Auth
         function getCurrentUser() {
-            const email = localStorage.getItem('current_user_email');
-            const name = localStorage.getItem('current_user_name');
-            if (email) {
-                return { email: email, name: name || email.split('@')[0] };
+            const user = auth.currentUser;
+            if (user) {
+                return {
+                    email: user.email,
+                    name: user.email.split('@')[0],
+                    uid: user.uid
+                };
             }
-            // If not logged in, create/retrieve anonymous ID
+            // Anonymous fallback
             let anonymousId = localStorage.getItem('anonymous_id');
             if (!anonymousId) {
                 anonymousId = 'anonymous_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
                 localStorage.setItem('anonymous_id', anonymousId);
             }
-            return { email: anonymousId, name: 'Anonymous User' };
+            return { email: anonymousId, name: 'Anonymous User', uid: anonymousId };
         }
+
+        // Update header based on auth state
+        function updateAuthVisuals() {
+            const authZone = document.getElementById('auth-nav-zone');
+            const user = auth.currentUser;
+            
+            if (user) {
+                const userName = user.email.split('@')[0];
+                authZone.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="bg-brandTeal/10 border border-brandTeal/30 text-brandTeal font-semibold px-4 py-2 rounded-full text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved"></i> ${userName}
+                        </div>
+                        <button onclick="logout()" class="bg-white/5 hover:bg-white/10 text-white/70 px-4 py-2 rounded-full text-sm transition-colors">Logout</button>
+                    </div>`;
+            } else {
+                authZone.innerHTML = `
+                    <button onclick="window.location.href='index.html'" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all border border-white/10">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Sign In
+                    </button>
+                    <button onclick="window.location.href='index.html'" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all shadow-[0_4px_20px_rgba(0,180,216,0.25)] hover:scale-105">
+                        <i class="fa-solid fa-user-plus"></i>
+                        Sign Up
+                    </button>
+                `;
+            }
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            });
+        }
+
+        // Listen for auth state changes
+        auth.onAuthStateChanged((user) => {
+            updateAuthVisuals();
+        });
 
         // Fix Leaflet icons
         delete L.Icon.Default.prototype._getIconUrl;
@@ -216,9 +283,53 @@
             maxZoom: 20
         }).addTo(map);
 
-        // Load saved reviews from localStorage
-        let reviews = JSON.parse(localStorage.getItem('map_reviews') || '[]');
+        // Load saved reviews from Firebase
+        let reviews = [];
         let markers = {};
+
+        function loadReviews() {
+            const reviewsRef = database.ref('map_reviews');
+            reviewsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    reviews = Object.values(data);
+                } else {
+                    reviews = [];
+                    // Add sample data if empty
+                    const sampleReviews = [
+                        {
+                            id: 1,
+                            lat: 42.6660,
+                            lng: 21.1620,
+                            location: "Central High School, Pristina",
+                            rating: 2,
+                            text: "Several students reported cyberbullying on Discord groups. Need more awareness programs.",
+                            platform: "Discord",
+                            userEmail: "demo@student.com",
+                            userName: "Demo Student",
+                            date: new Date().toISOString()
+                        },
+                        {
+                            id: 2,
+                            lat: 42.6515,
+                            lng: 21.1490,
+                            location: "City Library, Pristina",
+                            rating: 5,
+                            text: "Safe space with great resources and supportive staff. Highly recommended for students.",
+                            platform: "",
+                            userEmail: "demo@parent.com",
+                            userName: "Demo Parent",
+                            date: new Date().toISOString()
+                        }
+                    ];
+                    reviews = sampleReviews;
+                    sampleReviews.forEach(r => {
+                        database.ref(`map_reviews/${r.id}`).set(r);
+                    });
+                }
+                loadAllReviews();
+            });
+        }
 
         function getMarkerColor(rating) {
             if (rating >= 4) return 'green';
@@ -255,16 +366,14 @@
                 </div>
             `);
             
-            marker.on('click', () => {
-                displayReviewDetails();
-            });
-            
             markers[review.id] = marker;
         }
 
         // Display all reviews in sidebar
         function displayReviewDetails() {
             const container = document.getElementById('reviews-list');
+            if (!container) return;
+            
             if (reviews.length === 0) {
                 container.innerHTML = '<div class="text-white/40 text-center py-8">No reviews yet. Click on map to add one!</div>';
                 return;
@@ -302,7 +411,7 @@
         }
 
         // Delete review function
-        function deleteReview(id) {
+        async function deleteReview(id) {
             const currentUser = getCurrentUser();
             const reviewToDelete = reviews.find(r => r.id === id);
             
@@ -317,9 +426,7 @@
             }
             
             if (confirm('Are you sure you want to delete your review?')) {
-                reviews = reviews.filter(r => r.id !== id);
-                localStorage.setItem('map_reviews', JSON.stringify(reviews));
-                loadAllReviews();
+                await database.ref(`map_reviews/${id}`).remove();
                 alert('✅ Your review has been deleted!');
             }
         }
@@ -373,10 +480,9 @@
         // Submit new review
         let currentRating = 0;
         
-        function submitReview(event) {
+        async function submitReview(event) {
             event.preventDefault();
             
-            // Get current user at submission time
             const currentUser = getCurrentUser();
             
             const lat = document.getElementById('review-lat').value;
@@ -385,7 +491,6 @@
             const text = document.getElementById('review-text').value;
             const platform = document.getElementById('review-platform').value;
             
-            // Validation
             if (!lat || !lng) {
                 alert('Please click on the map first to select a location!');
                 return;
@@ -414,12 +519,8 @@
                 date: new Date().toISOString()
             };
             
-            console.log('Submitting review:', newReview);
+            await database.ref(`map_reviews/${newReview.id}`).set(newReview);
             
-            reviews.push(newReview);
-            localStorage.setItem('map_reviews', JSON.stringify(reviews));
-            
-            loadAllReviews();
             closeReviewModal();
             document.getElementById('add-review-form').reset();
             currentRating = 0;
@@ -475,43 +576,11 @@
             return div.innerHTML;
         }
 
-        // Initial load
-        loadAllReviews();
-
-        // Add sample data if empty
-        if (reviews.length === 0) {
-            const sampleReviews = [
-                {
-                    id: 1,
-                    lat: 42.6660,
-                    lng: 21.1620,
-                    location: "Central High School, Pristina",
-                    rating: 2,
-                    text: "Several students reported cyberbullying on Discord groups. Need more awareness programs.",
-                    platform: "Discord",
-                    userEmail: "demo@student.com",
-                    userName: "Demo Student",
-                    date: new Date().toISOString()
-                },
-                {
-                    id: 2,
-                    lat: 42.6515,
-                    lng: 21.1490,
-                    location: "City Library, Pristina",
-                    rating: 5,
-                    text: "Safe space with great resources and supportive staff. Highly recommended for students.",
-                    platform: "",
-                    userEmail: "demo@parent.com",
-                    userName: "Demo Parent",
-                    date: new Date().toISOString()
-                }
-            ];
-            reviews = sampleReviews;
-            localStorage.setItem('map_reviews', JSON.stringify(reviews));
-            loadAllReviews();
-        }
-        
-        console.log('Map page loaded. Current user:', getCurrentUser());
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAuthVisuals();
+            loadReviews();
+        });
     </script>
 </body>
 </html>

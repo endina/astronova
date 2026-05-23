@@ -25,6 +25,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -48,7 +53,6 @@
 </head>
 <body class="bg-brandDark text-white antialiased dot-matrix">
 
-    <!-- Header -->
     <header class="fixed top-0 left-0 w-full z-40 bg-brandDark/80 backdrop-blur-md border-b border-white/5">
         <div class="max-w-7xl mx-auto px-6 h-28 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-3 group">
@@ -67,11 +71,11 @@
             </nav>
 
             <div id="auth-nav-zone" class="flex items-center gap-3">
-                <button onclick="openAuthModal('signin')" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all border border-white/10">
+                <button onclick="window.location.href='index.html'" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all border border-white/10">
                     <i class="fa-solid fa-right-to-bracket"></i>
                     Sign In
                 </button>
-                <button onclick="openAuthModal('signup')" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all shadow-[0_4px_20px_rgba(0,180,216,0.25)] hover:scale-105">
+                <button onclick="window.location.href='index.html'" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all shadow-[0_4px_20px_rgba(0,180,216,0.25)] hover:scale-105">
                     <i class="fa-solid fa-user-plus"></i>
                     Sign Up
                 </button>
@@ -94,8 +98,8 @@
                             <i class="fa-solid fa-phone text-red-500 text-2xl"></i>
                         </div>
                         <h3 class="text-xl font-bold text-white mb-2">24/7 Crisis Helpline</h3>
-                        <p class="text-3xl font-bold text-brandTeal mb-2">1-800-273-8255</p>
-                        <p class="text-white/50 text-sm">National Suicide Prevention Lifeline</p>
+                        <p class="text-3xl font-bold text-brandTeal mb-2">+383 38 666 666</p>
+                        <p class="text-white/50 text-sm">Linja e jetes</p>
                     </div>
                     
                     <div class="glass-panel rounded-2xl p-6 border border-white/10 text-center">
@@ -103,7 +107,7 @@
                             <i class="fa-solid fa-message text-brandTeal text-2xl"></i>
                         </div>
                         <h3 class="text-xl font-bold text-white mb-2">Text Support</h3>
-                        <p class="text-3xl font-bold text-brandTeal mb-2">741741</p>
+                        <p class="text-xl font-bold text-brandTeal mb-2">ks-customerservice@bkt.com.al</p>
                         <p class="text-white/50 text-sm">Text "HOME" for crisis support</p>
                     </div>
                     
@@ -216,45 +220,76 @@
     </div>
 
     <script>
-        // Load therapists from localStorage
-        let therapists = JSON.parse(localStorage.getItem('registered_therapists') || '[]');
+        // ============ FIREBASE CONFIGURATION ============
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWiGfigIyK_QwIPw91XWMu01UxSZs9opc",
+            authDomain: "speaksafe-3c536.firebaseapp.com",
+            projectId: "speaksafe-3c536",
+            storageBucket: "speaksafe-3c536.firebasestorage.app",
+            messagingSenderId: "545860403617",
+            appId: "1:545860403617:web:60c47d0ad67df9bd53cbe0",
+            measurementId: "G-S3M028G8MS"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
         
-        // Sample default therapists
-        if (therapists.length === 0) {
-            therapists = [
-                {
-                    id: 1,
-                    name: "Dr. Sarah Johnson",
-                    specialization: "Youth Counseling & Cyberbullying",
-                    email: "sarah.johnson@speaksafe.org",
-                    phone: "+383 44 111 222",
-                    bio: "Licensed therapist with 10+ years of experience helping teens navigate online harassment and building digital resilience.",
-                    date: new Date().toISOString()
-                },
-                {
-                    id: 2,
-                    name: "Prof. Michael Brown",
-                    specialization: "Digital Safety & Mental Health",
-                    email: "michael.brown@speaksafe.org",
-                    phone: "+383 44 333 444",
-                    bio: "Clinical psychologist specializing in adolescent mental health and cyberbullying prevention strategies.",
-                    date: new Date().toISOString()
-                },
-                {
-                    id: 3,
-                    name: "Dr. Elena Petrov",
-                    specialization: "Trauma & Recovery",
-                    email: "elena.petrov@speaksafe.org",
-                    phone: "+383 44 555 666",
-                    bio: "Trauma-informed therapist helping young people recover from bullying experiences and rebuild confidence.",
-                    date: new Date().toISOString()
+        // Load therapists from Firebase
+        let therapists = [];
+        
+        function loadTherapists() {
+            const therapistsRef = database.ref('therapists');
+            therapistsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    therapists = Object.values(data);
+                } else {
+                    // Add default therapists if none exist
+                    const defaultTherapists = [
+                        {
+                            id: 1,
+                            name: "Dr. Sarah Johnson",
+                            specialization: "Youth Counseling & Cyberbullying",
+                            email: "sarah.johnson@speaksafe.org",
+                            phone: "+383 44 111 222",
+                            bio: "Licensed therapist with 10+ years of experience helping teens navigate online harassment and building digital resilience.",
+                            date: new Date().toISOString()
+                        },
+                        {
+                            id: 2,
+                            name: "Prof. Michael Brown",
+                            specialization: "Digital Safety & Mental Health",
+                            email: "michael.brown@speaksafe.org",
+                            phone: "+383 44 333 444",
+                            bio: "Clinical psychologist specializing in adolescent mental health and cyberbullying prevention strategies.",
+                            date: new Date().toISOString()
+                        },
+                        {
+                            id: 3,
+                            name: "Dr. Elena Petrov",
+                            specialization: "Trauma & Recovery",
+                            email: "elena.petrov@speaksafe.org",
+                            phone: "+383 44 555 666",
+                            bio: "Trauma-informed therapist helping young people recover from bullying experiences and rebuild confidence.",
+                            date: new Date().toISOString()
+                        }
+                    ];
+                    therapists = defaultTherapists;
+                    // Save to Firebase
+                    defaultTherapists.forEach(t => {
+                        database.ref(`therapists/${t.id}`).set(t);
+                    });
                 }
-            ];
-            localStorage.setItem('registered_therapists', JSON.stringify(therapists));
+                displayTherapists();
+            });
         }
         
         function displayTherapists() {
             const container = document.getElementById('therapists-list');
+            if (!container) return;
+            
             if (therapists.length === 0) {
                 container.innerHTML = '<div class="text-white/40 text-center py-12 col-span-full">No therapists registered yet. Be the first to add yourself!</div>';
                 return;
@@ -293,7 +328,7 @@
             document.getElementById('add-therapist-modal').style.display = 'none';
         }
         
-        function addTherapist(event) {
+        async function addTherapist(event) {
             event.preventDefault();
             
             const inviteCode = document.getElementById('therapist-invite-code').value;
@@ -312,12 +347,10 @@
                 date: new Date().toISOString()
             };
             
-            therapists.push(newTherapist);
-            localStorage.setItem('registered_therapists', JSON.stringify(therapists));
+            await database.ref(`therapists/${newTherapist.id}`).set(newTherapist);
             
             closeAddTherapistModal();
             document.getElementById('add-therapist-form').reset();
-            displayTherapists();
             
             alert('✅ You have been registered as a therapist! Your profile will appear in the directory.');
         }
@@ -332,8 +365,49 @@
             return div.innerHTML;
         }
         
-        // Initial load
-        displayTherapists();
+        function updateAuthVisuals() {
+            const authZone = document.getElementById('auth-nav-zone');
+            const user = auth.currentUser;
+            
+            if (user) {
+                const userName = user.email.split('@')[0];
+                authZone.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="bg-brandTeal/10 border border-brandTeal/30 text-brandTeal font-semibold px-4 py-2 rounded-full text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved"></i> ${userName}
+                        </div>
+                        <button onclick="logout()" class="bg-white/5 hover:bg-white/10 text-white/70 px-4 py-2 rounded-full text-sm transition-colors">Logout</button>
+                    </div>`;
+            } else {
+                authZone.innerHTML = `
+                    <button onclick="window.location.href='index.html'" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all border border-white/10">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Sign In
+                    </button>
+                    <button onclick="window.location.href='index.html'" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all shadow-[0_4px_20px_rgba(0,180,216,0.25)] hover:scale-105">
+                        <i class="fa-solid fa-user-plus"></i>
+                        Sign Up
+                    </button>
+                `;
+            }
+        }
+        
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            });
+        }
+        
+        // Listen for auth state changes
+        auth.onAuthStateChanged((user) => {
+            updateAuthVisuals();
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAuthVisuals();
+            loadTherapists();
+        });
     </script>
 </body>
 </html>

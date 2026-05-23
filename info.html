@@ -34,6 +34,11 @@
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -70,11 +75,11 @@
             </nav>
 
             <div id="auth-nav-zone" class="flex items-center gap-3">
-                <button onclick="openAuthModal('signin')" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all border border-white/10">
+                <button onclick="window.location.href='index.html'" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all border border-white/10">
                     <i class="fa-solid fa-right-to-bracket"></i>
                     Sign In
                 </button>
-                <button onclick="openAuthModal('signup')" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all shadow-[0_4px_20px_rgba(0,180,216,0.25)] hover:scale-105">
+                <button onclick="window.location.href='index.html'" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all shadow-[0_4px_20px_rgba(0,180,216,0.25)] hover:scale-105">
                     <i class="fa-solid fa-user-plus"></i>
                     Sign Up
                 </button>
@@ -161,20 +166,20 @@
             <p class="text-white/50 mb-10">Numbers that show why we need to act</p>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div>
-                    <div class="text-4xl font-bold text-brandTeal">1 in 3</div>
-                    <p class="text-white/50 text-xs mt-1">students bullied</p>
+                    <div class="text-4xl font-bold text-brandTeal">22%</div>
+                    <p class="text-white/50 text-xs mt-1">cyberbullied</p>
                 </div>
                 <div>
-                    <div class="text-4xl font-bold text-brandTeal">64%</div>
-                    <p class="text-white/50 text-xs mt-1">never report it</p>
+                    <div class="text-4xl font-bold text-brandTeal">23%</div>
+                    <p class="text-white/50 text-xs mt-1">report it</p>
                 </div>
                 <div>
-                    <div class="text-4xl font-bold text-brandTeal">70%</div>
+                    <div class="text-4xl font-bold text-brandTeal">75%</div>
                     <p class="text-white/50 text-xs mt-1">witness bullying</p>
                 </div>
                 <div>
-                    <div class="text-4xl font-bold text-brandTeal">15%</div>
-                    <p class="text-white/50 text-xs mt-1">cyberbullied</p>
+                    <div class="text-4xl font-bold text-brandTeal">77%</div>
+                    <p class="text-white/50 text-xs mt-1">report it</p>
                 </div>
             </div>
         </div>
@@ -313,6 +318,64 @@
         </div>
     </footer>
 
-</body>
+    <script>
+        // ============ FIREBASE CONFIGURATION ============
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWiGfigIyK_QwIPw91XWMu01UxSZs9opc",
+            authDomain: "speaksafe-3c536.firebaseapp.com",
+            projectId: "speaksafe-3c536",
+            storageBucket: "speaksafe-3c536.firebasestorage.app",
+            messagingSenderId: "545860403617",
+            appId: "1:545860403617:web:60c47d0ad67df9bd53cbe0",
+            measurementId: "G-S3M028G8MS"
+        };
 
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        function updateAuthVisuals() {
+            const authZone = document.getElementById('auth-nav-zone');
+            const user = auth.currentUser;
+            
+            if (user) {
+                const userName = user.email.split('@')[0];
+                authZone.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="bg-brandTeal/10 border border-brandTeal/30 text-brandTeal font-semibold px-4 py-2 rounded-full text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved"></i> ${userName}
+                        </div>
+                        <button onclick="logout()" class="bg-white/5 hover:bg-white/10 text-white/70 px-4 py-2 rounded-full text-sm transition-colors">Logout</button>
+                    </div>`;
+            } else {
+                authZone.innerHTML = `
+                    <button onclick="window.location.href='index.html'" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all border border-white/10">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Sign In
+                    </button>
+                    <button onclick="window.location.href='index.html'" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all shadow-[0_4px_20px_rgba(0,180,216,0.25)] hover:scale-105">
+                        <i class="fa-solid fa-user-plus"></i>
+                        Sign Up
+                    </button>
+                `;
+            }
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            });
+        }
+
+        // Listen for auth state changes
+        auth.onAuthStateChanged((user) => {
+            updateAuthVisuals();
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAuthVisuals();
+        });
+    </script>
+</body>
 </html>

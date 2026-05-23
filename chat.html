@@ -14,6 +14,8 @@
                         brandDark: '#030b14', 
                         brandTeal: '#00b4d8', 
                         brandTealHover: '#0096b4',
+                        danger: '#ef4444',
+                        warning: '#f59e0b'
                     }
                 }
             }
@@ -24,6 +26,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Firebase SDKs - ALL THREE NEEDED -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <style>
         body {
@@ -36,19 +43,11 @@
         .glass-panel {
             background: rgba(4, 15, 26, 0.6);
             backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
         }
         .chat-messages {
             scroll-behavior: smooth;
             height: calc(100vh - 320px);
             min-height: 450px;
-        }
-        .online-indicator {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
         }
         .message-in {
             animation: fadeInSlide 0.3s ease-out;
@@ -72,14 +71,15 @@
             0%, 100% { opacity: 0.2; transform: translateY(0); }
             50% { opacity: 1; transform: translateY(-4px); }
         }
+        .user-avatar {
+            background: linear-gradient(135deg, #00b4d8 0%, #0096b4 100%);
+        }
     </style>
 </head>
 <body class="bg-brandDark text-white antialiased dot-matrix">
 
-    <!-- Header -->
     <header class="fixed top-0 left-0 w-full z-40 bg-brandDark/80 backdrop-blur-md border-b border-white/5">
         <div class="max-w-7xl mx-auto px-6 h-28 flex items-center justify-between">
-            
             <a href="index.html" class="flex items-center gap-3 group">
                 <div class="w-9 h-9 rounded-xl bg-transparent border-2 border-brandTeal flex items-center justify-center shadow-[0_0_15px_rgba(0,180,216,0.3)] group-hover:scale-105 transition-transform">
                     <i class="fa-solid fa-shield-halved text-brandTeal text-sm"></i>
@@ -95,32 +95,29 @@
                 <a href="help.html" class="text-white/70 hover:text-brandTeal transition-colors">Help</a>
                 <a href="chat.html" class="bg-brandTeal/30 border border-brandTeal/60 text-brandTeal font-semibold px-4 py-2 rounded-full text-sm flex items-center gap-2">
                     <i class="fa-solid fa-comments"></i>
-                    Chat
+                    Community Chat
                 </a>
             </nav>
 
-            <div id="auth-nav-zone" class="flex items-center gap-3">
-                <!-- Auth buttons will be populated by JS -->
-            </div>
+            <div id="auth-nav-zone" class="flex items-center gap-3"></div>
         </div>
     </header>
 
-    <!-- Main Chat Section -->
     <section class="pt-32 pb-20 px-6 min-h-screen">
-        <div class="max-w-7xl mx-auto">
+        <div class="max-w-6xl mx-auto">
             
-            <!-- Chat Header with Online Users -->
             <div class="mb-6">
                 <div class="flex justify-between items-center flex-wrap gap-4">
                     <div>
                         <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white">
                             Community <span class="text-brandTeal">Chat</span>
+                            <span class="text-sm bg-danger/20 text-danger px-2 py-1 rounded-lg ml-2 text-xs">AI Protected</span>
                         </h1>
-                        <p class="text-white/50 text-sm mt-1">Connect, share experiences, and support each other</p>
+                        <p class="text-white/50 text-sm mt-1">Connect, share experiences, and support each other in a safe space</p>
                     </div>
                     <div class="glass-panel rounded-full px-4 py-2 border border-white/10">
                         <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-green-500 online-indicator"></div>
+                            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
                             <span class="text-white/70 text-sm" id="online-count">0</span>
                             <span class="text-white/40 text-sm">online now</span>
                         </div>
@@ -136,17 +133,20 @@
                         <div class="p-4 border-b border-white/10">
                             <h3 class="text-white font-semibold flex items-center gap-2">
                                 <i class="fa-solid fa-users text-brandTeal"></i>
-                                Active Users
+                                Active Members
                             </h3>
                         </div>
                         <div id="users-list" class="divide-y divide-white/5 max-h-[500px] overflow-y-auto">
-                            <!-- Users will be populated here -->
+                            <div class="p-4 text-center text-white/40 text-sm">Loading users...</div>
                         </div>
                         <div class="p-4 border-t border-white/10">
-                            <button onclick="openPrivateChat()" class="w-full bg-brandTeal/10 hover:bg-brandTeal/20 border border-brandTeal/30 text-brandTeal rounded-xl py-2 text-sm transition-colors flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-user-plus"></i>
-                                Start Private Chat
-                            </button>
+                            <div class="bg-brandTeal/10 border border-brandTeal/30 rounded-xl p-3">
+                                <p class="text-brandTeal text-xs flex items-center gap-2">
+                                    <i class="fa-solid fa-shield-heart"></i>
+                                    Safe Chat Guidelines
+                                </p>
+                                <p class="text-white/40 text-[10px] mt-1">✓ Be respectful • No hate speech • Support others</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -155,30 +155,28 @@
                 <div class="lg:col-span-3">
                     <div class="glass-panel rounded-2xl border border-white/10 overflow-hidden">
                         
-                        <!-- Chat Header -->
                         <div class="p-4 border-b border-white/10 bg-brandDark/30">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <h2 class="text-white font-semibold" id="current-room-name"># General Chat</h2>
-                                    <p class="text-white/40 text-xs">Everyone can see messages here</p>
+                                    <h2 class="text-white font-semibold flex items-center gap-2">
+                                        <i class="fa-solid fa-hashtag text-brandTeal"></i>
+                                        General Chat
+                                    </h2>
+                                    <p class="text-white/40 text-xs">Real-time • AI moderated • Safe community space</p>
                                 </div>
-                                <div class="flex gap-2">
-                                    <button onclick="switchRoom('general')" class="px-3 py-1 rounded-lg text-xs bg-brandTeal/20 text-brandTeal">General</button>
-                                    <button onclick="switchRoom('support')" class="px-3 py-1 rounded-lg text-xs bg-white/5 text-white/70 hover:bg-white/10">Support</button>
-                                    <button onclick="switchRoom('resources')" class="px-3 py-1 rounded-lg text-xs bg-white/5 text-white/70 hover:bg-white/10">Resources</button>
+                                <div class="text-xs text-white/30">
+                                    <i class="fa-regular fa-message"></i> Speak up, stay safe
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Chat Messages Container -->
-                        <div id="chat-messages-container" class="chat-messages overflow-y-auto p-6 space-y-4 bg-gradient-to-b from-brandDark/30 to-transparent">
+                        <div id="chat-messages-container" class="chat-messages overflow-y-auto p-6 space-y-4">
                             <div class="text-center text-white/30 text-sm py-10">
                                 <i class="fa-solid fa-comments text-4xl mb-3 block"></i>
-                                Loading messages...
+                                <p>Connecting to chat...</p>
                             </div>
                         </div>
 
-                        <!-- Typing Indicator -->
                         <div id="typing-indicator" class="hidden px-6 py-2">
                             <div class="flex items-center gap-2">
                                 <div class="typing-indicator flex gap-1">
@@ -186,12 +184,10 @@
                                     <span class="w-1.5 h-1.5 rounded-full bg-white/40"></span>
                                     <span class="w-1.5 h-1.5 rounded-full bg-white/40"></span>
                                 </div>
-                                <span class="text-white/30 text-xs" id="typing-user">Someone</span>
-                                <span class="text-white/30 text-xs">is typing...</span>
+                                <span class="text-white/30 text-xs" id="typing-user"></span>
                             </div>
                         </div>
 
-                        <!-- Chat Input Area -->
                         <div class="border-t border-white/10 p-4 bg-brandDark/50">
                             <div class="flex gap-3">
                                 <div class="flex-1 relative">
@@ -199,16 +195,16 @@
                                         class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-brandTeal/50 resize-none"
                                         onkeypress="handleEnterKey(event)"></textarea>
                                 </div>
-                                <button onclick="sendMessage()" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-6 py-3 rounded-xl transition-all shadow-lg hover:scale-105">
+                                <button onclick="sendMessage()" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-6 py-3 rounded-xl transition-all hover:scale-105">
                                     <i class="fa-solid fa-paper-plane"></i>
                                 </button>
                             </div>
                             <div class="flex justify-between items-center mt-2">
                                 <p class="text-white/20 text-[10px]">
-                                    <i class="fa-regular fa-message"></i> Be kind, support others
+                                    <i class="fa-solid fa-robot"></i> AI automatically blocks harmful language
                                 </p>
-                                <p class="text-white/20 text-[10px]">
-                                    <i class="fa-regular fa-clock"></i> Messages are anonymous
+                                <p class="text-white/20 text-[10px]" id="connection-status">
+                                    <i class="fa-solid fa-circle-nodes"></i> Connecting...
                                 </p>
                             </div>
                         </div>
@@ -218,269 +214,292 @@
         </div>
     </section>
 
-    <!-- Private Chat Modal -->
-    <div id="private-chat-modal" class="fixed inset-0 z-50 invisible opacity-0 transition-all duration-300 flex items-center justify-center p-4 bg-brandDark/80 backdrop-blur-md">
-        <div class="glass-panel w-full max-w-md rounded-2xl border border-white/10 overflow-hidden">
-            <div class="p-4 border-b border-white/10 flex justify-between items-center">
-                <h3 class="text-white font-semibold">Start Private Chat</h3>
-                <button onclick="closePrivateChatModal()" class="text-white/40 hover:text-white">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
-            <div class="p-6">
-                <p class="text-white/70 text-sm mb-4">Select a user to start a private conversation:</p>
-                <div id="online-users-list" class="space-y-2 max-h-64 overflow-y-auto">
-                    <!-- Users list -->
+    <!-- Warning Modal for Harmful Content -->
+    <div id="warning-modal" class="fixed inset-0 z-50 invisible opacity-0 transition-all duration-300 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-panel w-full max-w-md rounded-2xl p-6 border border-danger/30">
+            <div class="text-center">
+                <div class="w-16 h-16 rounded-full bg-danger/20 border-2 border-danger flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-shield-halved text-danger text-2xl"></i>
                 </div>
+                <h3 class="text-xl font-bold text-white mb-2">Message Blocked</h3>
+                <p class="text-white/60 text-sm mb-4" id="warning-message"></p>
+                <button onclick="closeWarningModal()" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-6 py-2 rounded-lg transition-all">
+                    I Understand
+                </button>
             </div>
         </div>
     </div>
 
     <footer class="bg-[#02080f] border-t border-white/10 py-8 px-6 mt-10">
         <div class="max-w-7xl mx-auto text-center">
-            <p class="text-white/30 text-xs">© 2026 SpeakSafe. Building safer digital spaces together.</p>
+            <p class="text-white/30 text-xs">© 2026 SpeakSafe • AI-Powered Safe Chat • Building safer digital spaces</p>
         </div>
     </footer>
 
     <script>
-        // Chat System State
-        let currentUser = null;
-        let currentRoom = 'general';
-        let messages = {
-            general: [],
-            support: [],
-            resources: []
+        // ============ FIREBASE CONFIGURATION ============
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWiGfigIyK_QwIPw91XWMu01UxSZs9opc",
+            authDomain: "speaksafe-3c536.firebaseapp.com",
+            projectId: "speaksafe-3c536",
+            storageBucket: "speaksafe-3c536.firebasestorage.app",
+            messagingSenderId: "545860403617",
+            appId: "1:545860403617:web:60c47d0ad67df9bd53cbe0",
+            measurementId: "G-S3M028G8MS"
         };
-        let onlineUsers = new Set();
-        let typingTimeout = null;
-        let isTyping = false;
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
         
-        // Get current user info
-        function getCurrentUser() {
-            const loggedIn = localStorage.getItem('speaksafe_user_logged');
-            if (loggedIn === 'true') {
-                const email = localStorage.getItem('current_user_email');
-                const role = localStorage.getItem('current_user_role');
-                return {
-                    name: email ? email.split('@')[0] : 'Anonymous',
-                    email: email,
-                    role: role,
-                    id: email || 'anonymous_' + Date.now()
-                };
+        // ============ AI HARMFUL LANGUAGE DETECTION ============
+        const harmfulPatterns = {
+            slurs: [
+                /\b(fuck|shit|damn|bitch|bastard|crap|dick|pussy|asshole)\b/i,
+                /\b(retard|retarded|mongoloid)\b/i,
+                /\b(whore|slut|prostitute)\b/i,
+                /\b(nigger|nigga|chink|spic|gook|kike|faggot|dyke|tranny)\b/i
+            ],
+            threats: [
+                /\b(kill|murder|death|die|suicide)\s+\b(you|yourself|them|everyone)\b/i,
+                /\b(i'?m\s+going\s+to\s+(kill|hurt|destroy|end))\b/i,
+                /\b(beat\s+up|shoot|stab|punch)\b/i,
+                /\b(bomb|terrorist|attack|shooting)\b/i,
+                /\b(go\s+kill\s+yourself|kys|commit\s+suicide)\b/i
+            ],
+            harassment: [
+                /\b(rape|molest|pedophile|creep|stalker)\b/i,
+                /\b(worthless|useless|pathetic|loser|failure)\b/i,
+                /\b(hate\s+you|wish\s+you\s+were\s+dead|get\s+lost)\b/i,
+                /\b(leave\s+this\s+group|you\s+don'?t\s+belong)\b/i
+            ],
+            cyberbullying: [
+                /\b(ugly|fat|stupid|idiot|moron|dumb)\s+\b(ass|bitch)?\b/i,
+                /\b(no\s+one\s+likes\s+you|everyone\s+hates\s+you)\b/i,
+                /\b(you'?re\s+a\s+(joke|disgrace|mistake))\b/i
+            ]
+        };
+
+        function detectHarmfulContent(message) {
+            const detected = { isHarmful: false, category: null, severity: 'low' };
+            
+            for (const [category, patterns] of Object.entries(harmfulPatterns)) {
+                for (const pattern of patterns) {
+                    if (pattern.test(message)) {
+                        detected.isHarmful = true;
+                        detected.category = category;
+                        if (category === 'slurs') detected.severity = 'high';
+                        else if (category === 'threats') detected.severity = 'critical';
+                        else if (category === 'cyberbullying') detected.severity = 'medium';
+                        break;
+                    }
+                }
+                if (detected.isHarmful) break;
             }
-            return {
-                name: 'Guest_' + Math.floor(Math.random() * 1000),
-                id: 'guest_' + Date.now(),
-                role: 'guest'
-            };
+            
+            const uppercaseRatio = (message.replace(/[^A-Z]/g, '').length / message.length) || 0;
+            if (uppercaseRatio > 0.5 && message.length > 10 && !detected.isHarmful) {
+                detected.isHarmful = true;
+                detected.category = 'harassment';
+                detected.severity = 'medium';
+            }
+            
+            return detected;
         }
 
-        // Initialize user
-        currentUser = getCurrentUser();
-        
-        // Add self to online users
-        function addSelfToOnline() {
-            const userData = {
-                id: currentUser.id,
-                name: currentUser.name,
-                role: currentUser.role,
-                lastSeen: Date.now()
-            };
+        // ============ CHAT SYSTEM ============
+        let currentUser = null;
+        let typingTimeout = null;
+        let chatInitialized = false;
+
+        // Initialize Firebase listeners
+        function initFirebaseListeners() {
+            if (chatInitialized) return;
+            chatInitialized = true;
             
-            let users = JSON.parse(localStorage.getItem('chat_online_users') || '[]');
-            const existingIndex = users.findIndex(u => u.id === currentUser.id);
-            if (existingIndex >= 0) {
-                users[existingIndex] = userData;
-            } else {
-                users.push(userData);
-            }
-            localStorage.setItem('chat_online_users', JSON.stringify(users));
-            updateOnlineUsersList();
-        }
-        
-        // Remove self from online
-        function removeSelfFromOnline() {
-            let users = JSON.parse(localStorage.getItem('chat_online_users') || '[]');
-            users = users.filter(u => u.id !== currentUser.id);
-            localStorage.setItem('chat_online_users', JSON.stringify(users));
-        }
-        
-        // Update online users list
-        function updateOnlineUsersList() {
-            let users = JSON.parse(localStorage.getItem('chat_online_users') || '[]');
-            // Remove users inactive for more than 2 minutes
-            const now = Date.now();
-            users = users.filter(u => now - u.lastSeen < 120000);
-            localStorage.setItem('chat_online_users', JSON.stringify(users));
+            const messagesRef = database.ref('chat/messages');
             
-            // Update UI
-            const usersListDiv = document.getElementById('users-list');
-            const onlineCountSpan = document.getElementById('online-count');
-            
-            onlineCountSpan.textContent = users.length;
-            
-            if (usersListDiv) {
-                if (users.length === 0) {
-                    usersListDiv.innerHTML = '<div class="p-4 text-center text-white/40 text-sm">No other users online</div>';
-                } else {
-                    usersListDiv.innerHTML = users.map(user => `
-                        <div class="p-3 flex items-center justify-between hover:bg-white/5 transition-colors">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-brandTeal/20 flex items-center justify-center">
-                                    <i class="fa-solid ${user.role === 'therapist' ? 'fa-stethoscope' : 'fa-user'} text-brandTeal text-xs"></i>
-                                </div>
-                                <div>
-                                    <p class="text-white text-sm font-medium">${escapeHtml(user.name)}</p>
-                                    <p class="text-white/30 text-xs">${user.role === 'therapist' ? 'Therapist' : 'Community Member'}</p>
-                                </div>
-                            </div>
-                            ${user.id !== currentUser.id ? `
-                                <button onclick="startPrivateChat('${user.id}', '${escapeHtml(user.name)}')" class="text-brandTeal hover:text-brandTealHover text-sm">
-                                    <i class="fa-regular fa-message"></i>
-                                </button>
-                            ` : '<span class="text-white/30 text-xs">You</span>'}
-                        </div>
-                    `).join('');
+            messagesRef.limitToLast(100).on('child_added', (snapshot) => {
+                const message = snapshot.val();
+                if (message && message.userId !== currentUser.id) {
+                    addMessageToUI(message, false);
+                } else if (message && message.userId === currentUser.id) {
+                    addMessageToUI(message, true);
                 }
-            }
-        }
-        
-        // Load messages from localStorage
-        function loadMessages() {
-            const saved = localStorage.getItem('chat_messages');
-            if (saved) {
-                const allMessages = JSON.parse(saved);
-                messages = {
-                    general: allMessages.general || [],
-                    support: allMessages.support || [],
-                    resources: allMessages.resources || []
-                };
-            }
-            renderMessages();
-        }
-        
-        // Save messages to localStorage
-        function saveMessages() {
-            localStorage.setItem('chat_messages', JSON.stringify(messages));
-        }
-        
-        // Render current room messages
-        function renderMessages() {
-            const container = document.getElementById('chat-messages-container');
-            if (!container) return;
+            });
             
-            const roomMessages = messages[currentRoom] || [];
+            // Online users tracking
+            const userStatusRef = database.ref('.info/connected');
+            userStatusRef.on('value', (snapshot) => {
+                if (snapshot.val() && currentUser) {
+                    const userRef = database.ref(`users/${currentUser.id}`);
+                    userRef.onDisconnect().remove();
+                    userRef.set({
+                        name: currentUser.name,
+                        role: currentUser.role,
+                        lastSeen: Date.now()
+                    });
+                }
+            });
             
-            if (roomMessages.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center text-white/30 text-sm py-10">
-                        <i class="fa-regular fa-comment-dots text-4xl mb-3 block"></i>
-                        <p>No messages yet. Be the first to say something!</p>
-                        <p class="text-xs mt-2">Remember to keep conversations supportive and kind 💙</p>
-                    </div>
-                `;
-                return;
-            }
+            // Listen for typing indicators
+            const typingRef = database.ref('typing');
+            typingRef.on('value', (snapshot) => {
+                const typingData = snapshot.val();
+                if (typingData && currentUser && typingData.userId !== currentUser.id && typingData.active) {
+                    showTypingIndicator(typingData.userName);
+                    setTimeout(() => hideTypingIndicator(), 2000);
+                }
+            });
             
-            container.innerHTML = roomMessages.map(msg => {
-                const isCurrentUser = msg.userId === currentUser.id;
-                return `
-                    <div class="flex ${isCurrentUser ? 'justify-end' : 'justify-start'} message-in">
-                        <div class="max-w-[70%] ${isCurrentUser ? 'bg-brandTeal rounded-2xl rounded-tr-none' : 'bg-white/10 rounded-2xl rounded-tl-none'} px-4 py-2.5">
-                            ${!isCurrentUser ? `<p class="text-brandTeal text-xs font-semibold mb-1">${escapeHtml(msg.userName)}</p>` : ''}
-                            <p class="${isCurrentUser ? 'text-brandDark' : 'text-white'} text-sm">${escapeHtml(msg.text)}</p>
-                            <p class="${isCurrentUser ? 'text-brandDark/50' : 'text-white/30'} text-[10px] mt-1">${msg.time}</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            // Scroll to bottom
-            container.scrollTop = container.scrollHeight;
+            // Track online users
+            const usersRef = database.ref('users');
+            usersRef.on('value', (snapshot) => {
+                const users = snapshot.val() || {};
+                const userList = Object.values(users);
+                const onlineCount = document.getElementById('online-count');
+                if (onlineCount) onlineCount.textContent = userList.length;
+                
+                const usersListDiv = document.getElementById('users-list');
+                if (usersListDiv) {
+                    if (userList.length === 0) {
+                        usersListDiv.innerHTML = '<div class="p-4 text-center text-white/40 text-sm">No other users online</div>';
+                    } else {
+                        usersListDiv.innerHTML = userList.map(user => `
+                            <div class="p-3 flex items-center justify-between hover:bg-white/5 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full user-avatar flex items-center justify-center">
+                                        <i class="fa-solid ${user.role === 'therapist' ? 'fa-stethoscope' : 'fa-user'} text-white text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-white text-sm font-medium">${escapeHtml(user.name)}</p>
+                                        <p class="text-white/30 text-xs">${user.role === 'therapist' ? 'Therapist' : 'Member'}</p>
+                                    </div>
+                                </div>
+                                ${user.id !== currentUser.id ? `
+                                    <button onclick="startPrivateChat('${user.id}', '${escapeHtml(user.name)}')" class="text-brandTeal hover:text-brandTealHover text-sm">
+                                        <i class="fa-regular fa-message"></i>
+                                    </button>
+                                ` : '<span class="text-white/30 text-xs">You</span>'}
+                            </div>
+                        `).join('');
+                    }
+                }
+            });
         }
-        
-        // Send message
-        function sendMessage() {
+
+        async function sendMessage() {
             const input = document.getElementById('chat-input');
             const message = input.value.trim();
             
-            if (!message) return;
+            if (!message || !currentUser) return;
+            
+            const detection = detectHarmfulContent(message);
+            
+            if (detection.isHarmful) {
+                showWarningModal(message, detection);
+                
+                const adminLog = database.ref('moderation_logs').push();
+                adminLog.set({
+                    userId: currentUser.id,
+                    userName: currentUser.name,
+                    message: message,
+                    detection: detection,
+                    timestamp: Date.now()
+                });
+                
+                input.value = '';
+                input.style.height = 'auto';
+                return;
+            }
             
             const now = new Date();
             const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
-            const newMessage = {
+            const messageData = {
                 id: Date.now(),
                 text: message,
                 userName: currentUser.name,
                 userId: currentUser.id,
                 userRole: currentUser.role,
                 time: timeStr,
-                timestamp: now.getTime(),
-                room: currentRoom
+                timestamp: now.getTime()
             };
             
-            if (!messages[currentRoom]) messages[currentRoom] = [];
-            messages[currentRoom].push(newMessage);
+            const messagesRef = database.ref('chat/messages');
+            await messagesRef.push(messageData);
             
-            // Keep only last 200 messages per room
-            if (messages[currentRoom].length > 200) {
-                messages[currentRoom] = messages[currentRoom].slice(-200);
-            }
-            
-            saveMessages();
-            renderMessages();
             input.value = '';
             input.style.height = 'auto';
+        }
+        
+        function addMessageToUI(message, isOwn = false) {
+            const container = document.getElementById('chat-messages-container');
+            if (!container) return;
             
-            // Broadcast to other tabs/windows
-            broadcastMessage(newMessage);
-        }
-        
-        // Broadcast message to other tabs
-        function broadcastMessage(message) {
-            localStorage.setItem('chat_last_message', JSON.stringify({
-                message: message,
-                timestamp: Date.now()
-            }));
-        }
-        
-        // Listen for messages from other tabs
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'chat_messages') {
-                loadMessages();
-            } else if (e.key === 'chat_last_message') {
-                const data = JSON.parse(e.newValue);
-                if (data && Date.now() - data.timestamp < 1000) {
-                    loadMessages();
-                }
-            } else if (e.key === 'chat_online_users') {
-                updateOnlineUsersList();
-            } else if (e.key === 'chat_typing') {
-                const typingData = JSON.parse(e.newValue);
-                if (typingData && typingData.userId !== currentUser.id && typingData.room === currentRoom) {
-                    showTypingIndicator(typingData.userName);
-                    setTimeout(() => hideTypingIndicator(), 2000);
-                }
+            // Remove loading message if present
+            if (container.children.length === 1 && container.children[0].querySelector('.fa-comments')) {
+                container.innerHTML = '';
             }
-        });
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.id = `msg-${message.id}`;
+            messageDiv.className = `flex ${isOwn ? 'justify-end' : 'justify-start'} message-in`;
+            
+            messageDiv.innerHTML = `
+                <div class="max-w-[70%] ${isOwn ? 'bg-brandTeal rounded-2xl rounded-tr-none' : 'bg-white/10 rounded-2xl rounded-tl-none'} px-4 py-2.5">
+                    ${!isOwn ? `<p class="text-brandTeal text-xs font-semibold mb-1">${escapeHtml(message.userName)}</p>` : ''}
+                    <p class="${isOwn ? 'text-brandDark' : 'text-white'} text-sm">${escapeHtml(message.text)}</p>
+                    <p class="${isOwn ? 'text-brandDark/50' : 'text-white/30'} text-[10px] mt-1">${message.time}</p>
+                </div>
+            `;
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
         
-        // Typing indicator
+        function showWarningModal(message, detection) {
+            const modal = document.getElementById('warning-modal');
+            const warningMsg = document.getElementById('warning-message');
+            
+            let categoryMsg = '';
+            switch(detection.category) {
+                case 'slurs': categoryMsg = 'Your message contains offensive language or hate speech. This violates our community guidelines.'; break;
+                case 'threats': categoryMsg = 'Your message contains threatening language. Threats are not tolerated in our community.'; break;
+                case 'harassment': categoryMsg = 'Your message appears to be harassing. Please keep conversations respectful.'; break;
+                case 'cyberbullying': categoryMsg = 'This message shows signs of cyberbullying. Remember to be kind and supportive.'; break;
+                default: categoryMsg = 'Your message violates our community guidelines. Please keep our space safe and respectful.';
+            }
+            
+            warningMsg.innerHTML = `${categoryMsg}<br><br><span class="text-white/40 text-xs">"${escapeHtml(message.substring(0, 100))}"</span><br><br><span class="text-brandTeal text-xs">Tip:</span> If you're experiencing bullying, please use our reporting tools.`;
+            
+            modal.classList.remove('invisible', 'opacity-0');
+        }
+        
+        function closeWarningModal() {
+            const modal = document.getElementById('warning-modal');
+            modal.classList.add('invisible', 'opacity-0');
+        }
+        
         function handleTyping() {
-            if (!isTyping) {
-                isTyping = true;
-                const typingData = {
-                    userId: currentUser.id,
-                    userName: currentUser.name,
-                    room: currentRoom,
-                    timestamp: Date.now()
-                };
-                localStorage.setItem('chat_typing', JSON.stringify(typingData));
-            }
+            if (!currentUser) return;
+            const typingRef = database.ref('typing');
+            typingRef.set({
+                userId: currentUser.id,
+                userName: currentUser.name,
+                active: true,
+                timestamp: Date.now()
+            });
             
             clearTimeout(typingTimeout);
             typingTimeout = setTimeout(() => {
-                isTyping = false;
+                typingRef.set({
+                    userId: currentUser.id,
+                    userName: currentUser.name,
+                    active: false,
+                    timestamp: Date.now()
+                });
             }, 2000);
         }
         
@@ -488,10 +507,8 @@
             const indicator = document.getElementById('typing-indicator');
             const typingUserSpan = document.getElementById('typing-user');
             if (indicator && typingUserSpan) {
-                typingUserSpan.textContent = userName;
+                typingUserSpan.textContent = `${userName} is typing...`;
                 indicator.classList.remove('hidden');
-                const container = document.getElementById('chat-messages-container');
-                if (container) container.scrollTop = container.scrollHeight;
             }
         }
         
@@ -509,96 +526,29 @@
             }
         }
         
-        // Switch chat rooms
-        function switchRoom(room) {
-            currentRoom = room;
-            renderMessages();
-            
-            // Update UI for active room
-            const buttons = document.querySelectorAll('[onclick^="switchRoom"]');
-            buttons.forEach(btn => {
-                if (btn.textContent.toLowerCase().includes(room)) {
-                    btn.className = 'px-3 py-1 rounded-lg text-xs bg-brandTeal/20 text-brandTeal';
-                } else {
-                    btn.className = 'px-3 py-1 rounded-lg text-xs bg-white/5 text-white/70 hover:bg-white/10';
-                }
-            });
-            
-            const roomNames = {
-                general: '# General Chat',
-                support: '# Support Circle',
-                resources: '# Resource Sharing'
-            };
-            document.getElementById('current-room-name').textContent = roomNames[room] || '# Chat';
-        }
-        
-        // Private chat functions
-        function openPrivateChat() {
-            const modal = document.getElementById('private-chat-modal');
-            const usersList = document.getElementById('online-users-list');
-            const users = JSON.parse(localStorage.getItem('chat_online_users') || '[]');
-            const otherUsers = users.filter(u => u.id !== currentUser.id);
-            
-            if (otherUsers.length === 0) {
-                alert('No other users online right now. Try again later!');
-                return;
-            }
-            
-            usersList.innerHTML = otherUsers.map(user => `
-                <button onclick="startPrivateChat('${user.id}', '${escapeHtml(user.name)}')" 
-                    class="w-full text-left p-3 rounded-xl hover:bg-white/5 transition-colors flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-brandTeal/20 flex items-center justify-center">
-                        <i class="fa-solid ${user.role === 'therapist' ? 'fa-stethoscope' : 'fa-user'} text-brandTeal"></i>
-                    </div>
-                    <div>
-                        <p class="text-white font-medium">${escapeHtml(user.name)}</p>
-                        <p class="text-white/40 text-xs">${user.role === 'therapist' ? 'Therapist' : 'Member'} • Click to chat</p>
-                    </div>
-                </button>
-            `).join('');
-            
-            modal.classList.remove('invisible', 'opacity-0');
-        }
-        
-        function closePrivateChatModal() {
-            const modal = document.getElementById('private-chat-modal');
-            modal.classList.add('invisible', 'opacity-0');
-        }
-        
         function startPrivateChat(userId, userName) {
-            closePrivateChatModal();
-            alert(`💬 Private chat with ${userName} coming soon!\n\nFeature in development: Direct messaging will be available in the next update. For now, continue using the public chat rooms to connect with others.`);
+            alert(`💬 Private messaging coming soon!\n\nFor now, you can chat with ${userName} in the main chat room. Stay safe and respectful! 💙`);
         }
         
-        // Update online status periodically
-        function updateOnlineStatus() {
-            addSelfToOnline();
-            setInterval(() => {
-                addSelfToOnline();
-            }, 30000);
-        }
-        
-        // Update auth visuals
         function updateAuthVisuals() {
             const authZone = document.getElementById('auth-nav-zone');
-            if (localStorage.getItem('speaksafe_user_logged') === 'true') {
-                const role = localStorage.getItem('current_user_role');
-                const email = localStorage.getItem('current_user_email');
-                const displayName = email ? email.split('@')[0] : 'Defender';
+            const user = auth.currentUser;
+            
+            if (user && currentUser) {
                 authZone.innerHTML = `
                     <div class="flex items-center gap-3">
                         <div class="bg-brandTeal/10 border border-brandTeal/30 text-brandTeal font-semibold px-4 py-2 rounded-full text-sm flex items-center gap-2">
-                            <i class="fa-solid ${role === 'therapist' ? 'fa-stethoscope' : 'fa-shield-halved'}"></i> ${displayName}
+                            <i class="fa-solid ${currentUser.role === 'therapist' ? 'fa-stethoscope' : 'fa-shield-halved'}"></i> ${currentUser.name}
                         </div>
-                        <button onclick="logout()" class="bg-white/5 hover:bg-white/10 text-white/70 px-4 py-2 rounded-full text-sm">Logout</button>
+                        <button onclick="logout()" class="bg-white/5 hover:bg-white/10 text-white/70 px-4 py-2 rounded-full text-sm transition-colors">Logout</button>
                     </div>`;
             } else {
                 authZone.innerHTML = `
-                    <button onclick="window.location.href='index.html'" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all border border-white/10">
+                    <button onclick="window.location.href='index.html'" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm transition-all border border-white/10">
                         <i class="fa-solid fa-right-to-bracket"></i>
                         Sign In
                     </button>
-                    <button onclick="window.location.href='index.html'" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all">
+                    <button onclick="window.location.href='index.html'" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm transition-all shadow-[0_4px_20px_rgba(0,180,216,0.25)]">
                         <i class="fa-solid fa-user-plus"></i>
                         Sign Up
                     </button>
@@ -607,11 +557,14 @@
         }
         
         function logout() {
-            removeSelfFromOnline();
-            localStorage.removeItem('speaksafe_user_logged');
-            localStorage.removeItem('current_user_role');
-            localStorage.removeItem('current_user_email');
-            window.location.href = 'index.html';
+            if (currentUser && currentUser.id) {
+                database.ref(`users/${currentUser.id}`).remove();
+            }
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                console.error('Logout error:', error);
+            });
         }
         
         function escapeHtml(str) {
@@ -629,18 +582,53 @@
             });
         }
         
-        // Clean up on page unload
-        window.addEventListener('beforeunload', () => {
-            removeSelfFromOnline();
+        // Listen for auth state changes
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                // Fetch user role from Firebase database
+                const snapshot = await database.ref(`users/${user.uid}`).once('value');
+                const userData = snapshot.val();
+                const userRole = userData?.role || 'client';
+                
+                currentUser = {
+                    name: user.email.split('@')[0],
+                    email: user.email,
+                    id: user.uid,
+                    role: userRole
+                };
+                updateAuthVisuals();
+                initFirebaseListeners();
+            } else {
+                currentUser = {
+                    name: 'Guest_' + Math.floor(Math.random() * 1000),
+                    id: 'guest_' + Date.now(),
+                    role: 'guest'
+                };
+                updateAuthVisuals();
+                initFirebaseListeners();
+            }
         });
         
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            updateAuthVisuals();
-            loadMessages();
-            addSelfToOnline();
-            updateOnlineStatus();
-            setInterval(updateOnlineUsersList, 5000);
+            const connectedRef = database.ref('.info/connected');
+            connectedRef.on('value', (snap) => {
+                const statusSpan = document.getElementById('connection-status');
+                if (statusSpan) {
+                    if (snap.val()) {
+                        statusSpan.innerHTML = '<i class="fa-solid fa-circle-nodes text-green-500"></i> Connected • Live';
+                    } else {
+                        statusSpan.innerHTML = '<i class="fa-solid fa-circle-exclamation text-danger"></i> Reconnecting...';
+                    }
+                }
+            });
+        });
+        
+        window.addEventListener('beforeunload', () => {
+            if (currentUser && currentUser.id && !currentUser.id.startsWith('guest')) {
+                database.ref(`users/${currentUser.id}`).remove();
+                database.ref('typing').set({ active: false });
+            }
         });
     </script>
 </body>

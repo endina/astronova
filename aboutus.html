@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - SpeakSafe</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandDark: '#030b14', 
+                        brandTeal: '#00b4d8', 
+                        brandTealHover: '#0096b4',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .hero-glow {
+            background: radial-gradient(circle at 50% 25%, rgba(0, 180, 216, 0.15) 0%, rgba(3, 11, 20, 1) 70%);
+        }
+        .dot-matrix {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .glass-panel {
+            background: rgba(4, 15, 26, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+    </style>
+</head>
+<body class="bg-brandDark text-white antialiased dot-matrix min-h-screen flex flex-col justify-between">
+
+    <!-- HEADER NAVIGATION -->
+    <header class="fixed top-0 left-0 w-full z-40 bg-brandDark/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-28 flex items-center justify-between">
+            
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-9 h-9 rounded-xl bg-transparent border-2 border-brandTeal flex items-center justify-center shadow-[0_0_15px_rgba(0,180,216,0.3)] group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-shield-halved text-brandTeal text-sm"></i>
+                </div>
+                <span class="text-2xl font-bold tracking-tight text-white">
+                    Speak<span class="text-brandTeal">safe</span>
+                </span>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-10 text-sm md:text-base">
+                <a href="index.html" class="text-white/70 hover:text-brandTeal transition-colors">Home</a>
+                <a href="mapful.html" class="text-white/70 hover:text-brandTeal transition-colors">Map</a>
+                <a href="help.html" class="text-white/70 hover:text-brandTeal transition-colors">Help</a>
+                <a href="chat.html" class="bg-brandTeal/20 border border-brandTeal/40 text-brandTeal hover:bg-brandTeal hover:text-brandDark transition-all px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
+                    <i class="fa-solid fa-comment-dots"></i>
+                    Chat
+                </a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all border border-white/10">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Hub
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENTS -->
+    <main class="flex-grow pt-28">
+        
+        <!-- HERO SECTION -->
+        <section class="hero-glow py-20 px-6 text-center">
+            <div class="max-w-3xl mx-auto space-y-6">
+                <span class="text-brandTeal uppercase tracking-widest text-xs font-bold bg-brandTeal/10 border border-brandTeal/20 px-3 py-1.5 rounded-md">Our Mission</span>
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white">
+                    Behind the <span class="text-brandTeal">Shield</span>
+                </h1>
+                <p class="text-base md:text-lg text-white/70 font-light leading-relaxed">
+                    SpeakSafe was founded with a singular, vital purpose: to bridge the gap between targeted cyberbullying trends and proactive, institutional support structures. We empower communities to stand firm together.
+                </p>
+            </div>
+        </section>
+
+        <!-- CORE VALUES / PILLARS -->
+        <section class="max-w-7xl mx-auto px-6 pb-24 grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <div class="glass-panel border border-white/5 rounded-2xl p-8 shadow-xl">
+                <div class="w-12 h-12 rounded-xl bg-brandTeal/10 border border-brandTeal/30 flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-user-secret text-brandTeal text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Absolute Anonymity</h3>
+                <p class="text-sm text-white/60 font-light leading-relaxed">
+                    Fear shouldn't block justice. Our platform processes security insights, site reviews, and vulnerability flags without capturing identifiers or sensitive metrics.
+                </p>
+            </div>
+
+            <div class="glass-panel border border-white/5 rounded-2xl p-8 shadow-xl">
+                <div class="w-12 h-12 rounded-xl bg-brandTeal/10 border border-brandTeal/30 flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-chart-line text-brandTeal text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Data-Driven Awareness</h3>
+                <p class="text-sm text-white/60 font-light leading-relaxed">
+                    By pinpointing safe or hostile domains and application usage anonymously, we reveal regional patterns to help administrative bodies distribute mental health resources accurately.
+                </p>
+            </div>
+
+            <div class="glass-panel border border-white/5 rounded-2xl p-8 shadow-xl">
+                <div class="w-12 h-12 rounded-xl bg-brandTeal/10 border border-brandTeal/30 flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-handshake-angle text-brandTeal text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Integrated Alliances</h3>
+                <p class="text-sm text-white/60 font-light leading-relaxed">
+                    We unify victims, specialized therapists, educational personnel, and families under one dashboard ecosystem to accelerate recovery timelines and build safe online habits.
+                </p>
+            </div>
+
+        </section>
+
+        <!-- THE STRATEGY SECTION -->
+        <section class="bg-[#02080f] border-t border-b border-white/5 py-20 px-6">
+            <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight">
+                        Flipping the script on digital harassment.
+                    </h2>
+                    <p class="text-sm md:text-base text-white/70 font-light leading-relaxed">
+                        Traditional moderation tools often fall short because they operate in isolation. SpeakSafe flips this paradigm by shifting the scale from manual platform reports to immediate community support networks.
+                    </p>
+                    <p class="text-sm md:text-base text-white/70 font-light leading-relaxed">
+                        Whether tracking threat vectors through interactive live mapping layers or finding validation in peer forums, defenders don't have to navigate digital safety issues alone.
+                    </p>
+                </div>
+                
+                <div class="glass-panel border border-white/10 rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/5">
+                        <span class="text-2xl font-black text-brandTeal font-mono">01</span>
+                        <div>
+                            <h4 class="font-semibold text-white">Identify & Document</h4>
+                            <p class="text-xs text-white/50">Log malicious websites anonymously to safeguard peers.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/5">
+                        <span class="text-2xl font-black text-brandTeal font-mono">02</span>
+                        <div>
+                            <h4 class="font-semibold text-white">Analyze & Map</h4>
+                            <p class="text-xs text-white/50">Translate verified user entries into real-time digital risk heatmaps.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/5">
+                        <span class="text-2xl font-black text-brandTeal font-mono">03</span>
+                        <div>
+                            <h4 class="font-semibold text-white">Support & Recover</h4>
+                            <p class="text-xs text-white/50">Direct victims straight to local therapists and custom self-care guidelines.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#02080f] border-t border-white/10 pt-20 pb-8 px-6">
+        <div class="max-w-7xl mx-auto">
+            
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-white/10">
+                
+                <div class="md:col-span-4 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-transparent border-2 border-brandTeal flex items-center justify-center shadow-[0_0_15px_rgba(0,180,216,0.3)]">
+                            <i class="fa-solid fa-shield-halved text-brandTeal text-sm"></i>
+                        </div>
+                        <span class="text-2xl font-bold tracking-tight text-white">
+                            Speak<span class="text-brandTeal">safe</span>
+                        </span>
+                    </div>
+                    <p class="text-white/50 text-sm leading-relaxed">
+                        Awareness and browser-level protection making the internet a kinder, safer place.
+                    </p>
+                    <div class="flex items-center gap-3 pt-2">
+                        <div class="w-2 h-2 rounded-full bg-brandTeal"></div>
+                        <span class="text-white/40 text-xs">Active protection</span>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2">
+                    <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">PLATFORM</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-white/40 hover:text-brandTeal text-sm transition-colors">Awareness Hub</a></li>
+                        <li><a href="#" class="text-white/40 hover:text-brandTeal text-sm transition-colors">Browser Extension</a></li>
+                        <li><a href="mapful.html" class="text-white/40 hover:text-brandTeal text-sm transition-colors">Reporting Tool</a></li>
+                        <li><a href="#" class="text-white/40 hover:text-brandTeal text-sm transition-colors">For Schools</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-2">
+                    <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">RESOURCES</h4>
+                    <ul class="space-y-2">
+                        <li><a href="info.html" class="text-white/40 hover:text-brandTeal text-sm transition-colors">Guides & Toolkits</a></li>
+                        <li><a href="#" class="text-white/40 hover:text-brandTeal text-sm transition-colors">Research</a></li>
+                        <li><a href="#" class="text-white/40 hover:text-brandTeal text-sm transition-colors">Parent Center</a></li>
+                        <li><a href="#" class="text-white/40 hover:text-brandTeal text-sm transition-colors">Educator Portal</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-4">
+                    <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">SUPPORT</h4>
+                    <ul class="space-y-2">
+                        <li><a href="help.html" class="text-white/40 hover:text-brandTeal text-sm transition-colors">Contact Us / Get Help</a></li>
+                        <li class="text-white/40 text-xs mt-4 pt-4 border-t border-white/5">
+                            <i class="fa-solid fa-circle-info text-brandTeal mr-1"></i> Emergency Hotline: Call 988 or your local emergency services for instant mental health support.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between pt-8 text-xs text-white/30 gap-4">
+                <p>&copy; 2026 SpeakSafe Project. All rights reserved.</p>
+                <div class="flex items-center gap-6">
+                    <a href="#" class="hover:text-brandTeal transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-brandTeal transition-colors">Terms of Service</a>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+</body>
+</html>

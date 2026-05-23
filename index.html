@@ -26,6 +26,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -87,8 +92,7 @@
             <a href="index.html" class="text-white/70 hover:text-brandTeal transition-colors">Home</a>
             <a href="mapful.html" class="text-white/70 hover:text-brandTeal transition-colors">Map</a>
             <a href="help.html" class="text-white/70 hover:text-brandTeal transition-colors">Help</a>
-            <!-- NEW CHAT BUTTON -->
-            <a href="chat.html" onclick="openLiveChat(); return false;" class="bg-brandTeal/20 border border-brandTeal/40 text-brandTeal hover:bg-brandTeal hover:text-brandDark transition-all px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
+            <a href="chat.html" class="bg-brandTeal/20 border border-brandTeal/40 text-brandTeal hover:bg-brandTeal hover:text-brandDark transition-all px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
                 <i class="fa-solid fa-comment-dots"></i>
                 Chat
             </a>
@@ -140,12 +144,12 @@
     <section class="bg-[#02080f] border-t border-white/5 py-16 px-6">
         <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-                <div class="text-4xl md:text-5xl font-extrabold text-brandTeal tracking-tight mb-2">1 in 3</div>
+                <div class="text-4xl md:text-5xl font-extrabold text-brandTeal tracking-tight mb-2">22%</div>
                 <div class="text-sm md:text-base text-white/60 font-light">teens face cyberbullying</div>
             </div>
             <div>
-                <div class="text-4xl md:text-5xl font-extrabold text-brandTeal tracking-tight mb-2">64%</div>
-                <div class="text-sm md:text-base text-white/60 font-light">never tell an adult</div>
+                <div class="text-4xl md:text-5xl font-extrabold text-brandTeal tracking-tight mb-2">77%</div>
+                <div class="text-sm md:text-base text-white/60 font-light">report bullying </div>
             </div>
             <div>
                 <div class="text-4xl md:text-5xl font-extrabold text-brandTeal tracking-tight mb-2">12k+</div>
@@ -190,11 +194,12 @@
                     </div>
                 </div>
 
-                <div class="pt-4">
-                    <button onclick="alert('Click anywhere directly on the map block to drop your custom safety pin data!')" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-extrabold px-6 py-3.5 rounded-xl text-sm flex items-center gap-2 transition-all shadow-md">
-                        <i class="fa-solid fa-location-dot"></i> Report an Incident Spot
-                    </button>
-                </div>
+             <div class="pt-4">
+                <a href="mapful.html" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-extrabold px-6 py-3.5 rounded-xl text-sm flex items-center gap-2 transition-all shadow-md">
+                <i class="fa-solid fa-location-dot"></i>
+                 Report an Incident Spot
+                </a>
+               </div>
             </div>
 
             <div class="lg:col-span-7">
@@ -488,7 +493,7 @@
                 <div class="md:col-span-2">
                     <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">PLATFORM</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-white/40 hover:text-brandTeal text-sm transition-colors">Awareness Hub</a></li>
+                        <li><a href="aboutus.html" class="text-white/40 hover:text-brandTeal text-sm transition-colors">About us</a></li>
                         <li><a href="#" class="text-white/40 hover:text-brandTeal text-sm transition-colors">Browser Extension</a></li>
                         <li><a href="#" class="text-white/40 hover:text-brandTeal text-sm transition-colors">Reporting Tool</a></li>
                         <li><a href="#" class="text-white/40 hover:text-brandTeal text-sm transition-colors">For Schools</a></li>
@@ -552,6 +557,22 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
     <script>
+        // ============ FIREBASE CONFIGURATION ============
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWiGfigIyK_QwIPw91XWMu01UxSZs9opc",
+            authDomain: "speaksafe-3c536.firebaseapp.com",
+            projectId: "speaksafe-3c536",
+            storageBucket: "speaksafe-3c536.firebasestorage.app",
+            messagingSenderId: "545860403617",
+            appId: "1:545860403617:web:60c47d0ad67df9bd53cbe0",
+            measurementId: "G-S3M028G8MS"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
         // Fix Leaflet default pin graphics
         delete L.Icon.Default.prototype._getIconUrl;
         L.Icon.Default.mergeOptions({
@@ -590,11 +611,26 @@
             `).openPopup();
         });
 
-        // Auth & Role Management
+        // ============ FIREBASE AUTH & ROLE MANAGEMENT ============
         let isSignUpMode = true;
-        let therapistResources = JSON.parse(localStorage.getItem('therapist_resources') || '[]');
-        let currentUserRole = localStorage.getItem('current_user_role');
-        let currentUserEmail = localStorage.getItem('current_user_email');
+        let currentUser = null;
+        let currentUserRole = null;
+        let therapistResources = [];
+
+        // Load resources from Firebase
+        function loadResources() {
+            const resourcesRef = database.ref('resources');
+            resourcesRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    therapistResources = Object.values(data);
+                } else {
+                    therapistResources = [];
+                }
+                refreshClientResources();
+                if (currentUserRole === 'therapist') refreshResourcesList();
+            });
+        }
 
         document.querySelectorAll('input[name="role"]').forEach(radio => {
             radio.addEventListener('change', function() {
@@ -634,34 +670,40 @@
             openAuthModal(isSignUpMode ? 'signup' : 'signin');
         }
 
-        function handleAuthSubmit(event) {
+        async function handleAuthSubmit(event) {
             event.preventDefault();
             const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-password').value;
-            const users = JSON.parse(localStorage.getItem('speaksafe_users') || '[]');
-            const existingUser = users.find(u => u.email === email);
             
-            if (isSignUpMode) {
-                if (existingUser) { alert('Account exists!'); return; }
-                users.push({ email, password, role: 'client' });
-                localStorage.setItem('speaksafe_users', JSON.stringify(users));
-                localStorage.setItem('speaksafe_user_logged', 'true');
-                localStorage.setItem('current_user_email', email);
-                localStorage.setItem('current_user_role', 'client');
-                currentUserRole = 'client';
-                currentUserEmail = email;
-            } else {
-                if (!existingUser || existingUser.password !== password) { alert('Invalid credentials!'); return; }
-                localStorage.setItem('speaksafe_user_logged', 'true');
-                localStorage.setItem('current_user_email', email);
-                localStorage.setItem('current_user_role', existingUser.role);
-                currentUserRole = existingUser.role;
-                currentUserEmail = email;
+            try {
+                if (isSignUpMode) {
+                    // Sign up
+                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                    // Set default role as 'client' in Firebase database
+                    await database.ref(`users/${userCredential.user.uid}`).set({
+                        email: email,
+                        role: 'client',
+                        createdAt: Date.now()
+                    });
+                    currentUserRole = 'client';
+                    alert('Account created successfully!');
+                } else {
+                    // Sign in
+                    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                    // Get user role from database
+                    const userSnapshot = await database.ref(`users/${userCredential.user.uid}`).once('value');
+                    const userData = userSnapshot.val();
+                    currentUserRole = userData?.role || 'client';
+                    alert('Logged in successfully!');
+                }
+                closeAuthModal();
+                updateAuthVisuals();
+                if (currentUserRole === 'therapist') openTherapistDashboard();
+                else openClientDashboard();
+            } catch (error) {
+                console.error(error);
+                alert(error.message);
             }
-            updateAuthVisuals();
-            closeAuthModal();
-            if (currentUserRole === 'therapist') openTherapistDashboard();
-            else openClientDashboard();
         }
 
         function openCommunityModal() {
@@ -674,7 +716,7 @@
             document.getElementById('community-modal').classList.add('invisible', 'opacity-0');
         }
 
-        function handleCommunityJoin(event) {
+        async function handleCommunityJoin(event) {
             event.preventDefault();
             const email = document.getElementById('community-email').value;
             const password = document.getElementById('community-password').value;
@@ -688,20 +730,23 @@
                 }
             }
             
-            const users = JSON.parse(localStorage.getItem('speaksafe_users') || '[]');
-            if (users.find(u => u.email === email)) { alert('Account exists!'); return; }
-            
-            users.push({ email, password, role });
-            localStorage.setItem('speaksafe_users', JSON.stringify(users));
-            localStorage.setItem('speaksafe_user_logged', 'true');
-            localStorage.setItem('current_user_role', role);
-            localStorage.setItem('current_user_email', email);
-            currentUserRole = role;
-            currentUserEmail = email;
-            closeCommunityModal();
-            if (role === 'therapist') openTherapistDashboard();
-            else openClientDashboard();
-            updateAuthVisuals();
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await database.ref(`users/${userCredential.user.uid}`).set({
+                    email: email,
+                    role: role,
+                    createdAt: Date.now()
+                });
+                currentUserRole = role;
+                closeCommunityModal();
+                alert('Account created successfully!');
+                updateAuthVisuals();
+                if (role === 'therapist') openTherapistDashboard();
+                else openClientDashboard();
+            } catch (error) {
+                console.error(error);
+                alert(error.message);
+            }
         }
 
         function openTherapistDashboard() {
@@ -722,18 +767,23 @@
             document.getElementById('client-dashboard-modal').classList.add('invisible', 'opacity-0');
         }
 
-        function handleAddResource(event) {
+        async function handleAddResource(event) {
             event.preventDefault();
+            const user = auth.currentUser;
+            if (!user) return;
+            
             const newResource = {
                 id: Date.now(),
                 title: document.getElementById('resource-title').value,
                 description: document.getElementById('resource-desc').value,
                 type: document.getElementById('resource-type').value,
                 url: document.getElementById('resource-url').value,
-                therapistEmail: currentUserEmail
+                therapistEmail: user.email,
+                therapistId: user.uid,
+                createdAt: Date.now()
             };
-            therapistResources.push(newResource);
-            localStorage.setItem('therapist_resources', JSON.stringify(therapistResources));
+            
+            await database.ref(`resources/${newResource.id}`).set(newResource);
             document.getElementById('add-resource-form').reset();
             alert('Resource added!');
             refreshResourcesList();
@@ -742,7 +792,10 @@
 
         function refreshResourcesList() {
             const container = document.getElementById('resources-list');
-            const myResources = therapistResources.filter(r => r.therapistEmail === currentUserEmail);
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const myResources = therapistResources.filter(r => r.therapistId === user.uid);
             if (myResources.length === 0) {
                 container.innerHTML = '<div class="text-white/40 text-center py-4">No resources yet</div>';
                 return;
@@ -762,11 +815,9 @@
             `).join('');
         }
 
-        function deleteResource(id) {
-            therapistResources = therapistResources.filter(r => r.id !== id);
-            localStorage.setItem('therapist_resources', JSON.stringify(therapistResources));
-            refreshResourcesList();
-            refreshClientResources();
+        async function deleteResource(id) {
+            await database.ref(`resources/${id}`).remove();
+            alert('Resource deleted');
         }
 
         function refreshClientResources() {
@@ -793,30 +844,44 @@
 
         function updateAuthVisuals() {
             const authZone = document.getElementById('auth-nav-zone');
-            const role = localStorage.getItem('current_user_role');
-            const email = localStorage.getItem('current_user_email');
-            const userName = email ? email.split('@')[0] : 'Defender';
+            const user = auth.currentUser;
             
-            if (localStorage.getItem('speaksafe_user_logged') === 'true') {
+            if (user) {
+                const userName = user.email.split('@')[0];
+                // Get user role from database
+                database.ref(`users/${user.uid}`).once('value').then((snapshot) => {
+                    const role = snapshot.val()?.role || 'client';
+                    authZone.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <button onclick="openDashboard()" class="bg-brandTeal/10 border border-brandTeal/30 text-brandTeal font-semibold px-4 py-2 rounded-full text-sm flex items-center gap-2">
+                                <i class="fa-solid ${role === 'therapist' ? 'fa-stethoscope' : 'fa-shield-halved'}"></i> ${userName}
+                            </button>
+                            <button onclick="logout()" class="bg-white/5 hover:bg-white/10 text-white/70 px-4 py-2 rounded-full text-sm">Logout</button>
+                        </div>`;
+                });
+            } else {
                 authZone.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <button onclick="openDashboard()" class="bg-brandTeal/10 border border-brandTeal/30 text-brandTeal font-semibold px-4 py-2 rounded-full text-sm flex items-center gap-2">
-                            <i class="fa-solid ${role === 'therapist' ? 'fa-stethoscope' : 'fa-shield-halved'}"></i> ${userName}
-                        </button>
-                        <button onclick="logout()" class="bg-white/5 hover:bg-white/10 text-white/70 px-4 py-2 rounded-full text-sm">Logout</button>
-                    </div>`;
+                    <button onclick="openAuthModal('signin')" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all border border-white/10">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Sign In
+                    </button>
+                    <button onclick="openAuthModal('signup')" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all shadow-[0_4px_20px_rgba(0,180,216,0.25)] hover:scale-105">
+                        <i class="fa-solid fa-user-plus"></i>
+                        Sign Up
+                    </button>
+                `;
             }
         }
 
         function openDashboard() {
-            if (localStorage.getItem('current_user_role') === 'therapist') openTherapistDashboard();
+            if (currentUserRole === 'therapist') openTherapistDashboard();
             else openClientDashboard();
         }
 
-        function logout() {
-            localStorage.removeItem('speaksafe_user_logged');
-            localStorage.removeItem('current_user_role');
-            localStorage.removeItem('current_user_email');
+        async function logout() {
+            await auth.signOut();
+            currentUserRole = null;
+            updateAuthVisuals();
             location.reload();
         }
 
@@ -826,9 +891,22 @@
             return div.innerHTML;
         }
 
+        // Listen to auth state changes
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                const snapshot = await database.ref(`users/${user.uid}`).once('value');
+                currentUserRole = snapshot.val()?.role || 'client';
+                updateAuthVisuals();
+            } else {
+                currentUserRole = null;
+                updateAuthVisuals();
+            }
+        });
+
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('speaksafe_user_logged') === 'true') updateAuthVisuals();
-            therapistResources = JSON.parse(localStorage.getItem('therapist_resources') || '[]');
+            loadResources();
+            updateAuthVisuals();
         });
     </script>
 </body>
