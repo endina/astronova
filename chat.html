@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Chat | SpeakSafe</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandDark: '#030b14', 
+                        brandTeal: '#00b4d8', 
+                        brandTealHover: '#0096b4',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .dot-matrix {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .glass-panel {
+            background: rgba(4, 15, 26, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .chat-messages {
+            scroll-behavior: smooth;
+            height: calc(100vh - 320px);
+            min-height: 450px;
+        }
+        .online-indicator {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .message-in {
+            animation: fadeInSlide 0.3s ease-out;
+        }
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .typing-indicator span {
+            animation: blink 1.4s infinite both;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink {
+            0%, 100% { opacity: 0.2; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-4px); }
+        }
+    </style>
+</head>
+<body class="bg-brandDark text-white antialiased dot-matrix">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full z-40 bg-brandDark/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-28 flex items-center justify-between">
+            
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-9 h-9 rounded-xl bg-transparent border-2 border-brandTeal flex items-center justify-center shadow-[0_0_15px_rgba(0,180,216,0.3)] group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-shield-halved text-brandTeal text-sm"></i>
+                </div>
+                <span class="text-2xl font-bold tracking-tight text-white">
+                    Speak<span class="text-brandTeal">safe</span>
+                </span>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-10 text-sm md:text-base">
+                <a href="index.html" class="text-white/70 hover:text-brandTeal transition-colors">Home</a>
+                <a href="mapful.html" class="text-white/70 hover:text-brandTeal transition-colors">Map</a>
+                <a href="help.html" class="text-white/70 hover:text-brandTeal transition-colors">Help</a>
+                <a href="chat.html" class="bg-brandTeal/30 border border-brandTeal/60 text-brandTeal font-semibold px-4 py-2 rounded-full text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-comments"></i>
+                    Chat
+                </a>
+            </nav>
+
+            <div id="auth-nav-zone" class="flex items-center gap-3">
+                <!-- Auth buttons will be populated by JS -->
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Chat Section -->
+    <section class="pt-32 pb-20 px-6 min-h-screen">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Chat Header with Online Users -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center flex-wrap gap-4">
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white">
+                            Community <span class="text-brandTeal">Chat</span>
+                        </h1>
+                        <p class="text-white/50 text-sm mt-1">Connect, share experiences, and support each other</p>
+                    </div>
+                    <div class="glass-panel rounded-full px-4 py-2 border border-white/10">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-green-500 online-indicator"></div>
+                            <span class="text-white/70 text-sm" id="online-count">0</span>
+                            <span class="text-white/40 text-sm">online now</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                
+                <!-- Sidebar - Users List -->
+                <div class="lg:col-span-1">
+                    <div class="glass-panel rounded-2xl border border-white/10 overflow-hidden sticky top-32">
+                        <div class="p-4 border-b border-white/10">
+                            <h3 class="text-white font-semibold flex items-center gap-2">
+                                <i class="fa-solid fa-users text-brandTeal"></i>
+                                Active Users
+                            </h3>
+                        </div>
+                        <div id="users-list" class="divide-y divide-white/5 max-h-[500px] overflow-y-auto">
+                            <!-- Users will be populated here -->
+                        </div>
+                        <div class="p-4 border-t border-white/10">
+                            <button onclick="openPrivateChat()" class="w-full bg-brandTeal/10 hover:bg-brandTeal/20 border border-brandTeal/30 text-brandTeal rounded-xl py-2 text-sm transition-colors flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-user-plus"></i>
+                                Start Private Chat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Chat Area -->
+                <div class="lg:col-span-3">
+                    <div class="glass-panel rounded-2xl border border-white/10 overflow-hidden">
+                        
+                        <!-- Chat Header -->
+                        <div class="p-4 border-b border-white/10 bg-brandDark/30">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h2 class="text-white font-semibold" id="current-room-name"># General Chat</h2>
+                                    <p class="text-white/40 text-xs">Everyone can see messages here</p>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="switchRoom('general')" class="px-3 py-1 rounded-lg text-xs bg-brandTeal/20 text-brandTeal">General</button>
+                                    <button onclick="switchRoom('support')" class="px-3 py-1 rounded-lg text-xs bg-white/5 text-white/70 hover:bg-white/10">Support</button>
+                                    <button onclick="switchRoom('resources')" class="px-3 py-1 rounded-lg text-xs bg-white/5 text-white/70 hover:bg-white/10">Resources</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Messages Container -->
+                        <div id="chat-messages-container" class="chat-messages overflow-y-auto p-6 space-y-4 bg-gradient-to-b from-brandDark/30 to-transparent">
+                            <div class="text-center text-white/30 text-sm py-10">
+                                <i class="fa-solid fa-comments text-4xl mb-3 block"></i>
+                                Loading messages...
+                            </div>
+                        </div>
+
+                        <!-- Typing Indicator -->
+                        <div id="typing-indicator" class="hidden px-6 py-2">
+                            <div class="flex items-center gap-2">
+                                <div class="typing-indicator flex gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white/40"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white/40"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white/40"></span>
+                                </div>
+                                <span class="text-white/30 text-xs" id="typing-user">Someone</span>
+                                <span class="text-white/30 text-xs">is typing...</span>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input Area -->
+                        <div class="border-t border-white/10 p-4 bg-brandDark/50">
+                            <div class="flex gap-3">
+                                <div class="flex-1 relative">
+                                    <textarea id="chat-input" rows="1" placeholder="Type your message here..." 
+                                        class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-brandTeal/50 resize-none"
+                                        onkeypress="handleEnterKey(event)"></textarea>
+                                </div>
+                                <button onclick="sendMessage()" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-6 py-3 rounded-xl transition-all shadow-lg hover:scale-105">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
+                            </div>
+                            <div class="flex justify-between items-center mt-2">
+                                <p class="text-white/20 text-[10px]">
+                                    <i class="fa-regular fa-message"></i> Be kind, support others
+                                </p>
+                                <p class="text-white/20 text-[10px]">
+                                    <i class="fa-regular fa-clock"></i> Messages are anonymous
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Private Chat Modal -->
+    <div id="private-chat-modal" class="fixed inset-0 z-50 invisible opacity-0 transition-all duration-300 flex items-center justify-center p-4 bg-brandDark/80 backdrop-blur-md">
+        <div class="glass-panel w-full max-w-md rounded-2xl border border-white/10 overflow-hidden">
+            <div class="p-4 border-b border-white/10 flex justify-between items-center">
+                <h3 class="text-white font-semibold">Start Private Chat</h3>
+                <button onclick="closePrivateChatModal()" class="text-white/40 hover:text-white">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <p class="text-white/70 text-sm mb-4">Select a user to start a private conversation:</p>
+                <div id="online-users-list" class="space-y-2 max-h-64 overflow-y-auto">
+                    <!-- Users list -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-[#02080f] border-t border-white/10 py-8 px-6 mt-10">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-white/30 text-xs">© 2026 SpeakSafe. Building safer digital spaces together.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Chat System State
+        let currentUser = null;
+        let currentRoom = 'general';
+        let messages = {
+            general: [],
+            support: [],
+            resources: []
+        };
+        let onlineUsers = new Set();
+        let typingTimeout = null;
+        let isTyping = false;
+        
+        // Get current user info
+        function getCurrentUser() {
+            const loggedIn = localStorage.getItem('speaksafe_user_logged');
+            if (loggedIn === 'true') {
+                const email = localStorage.getItem('current_user_email');
+                const role = localStorage.getItem('current_user_role');
+                return {
+                    name: email ? email.split('@')[0] : 'Anonymous',
+                    email: email,
+                    role: role,
+                    id: email || 'anonymous_' + Date.now()
+                };
+            }
+            return {
+                name: 'Guest_' + Math.floor(Math.random() * 1000),
+                id: 'guest_' + Date.now(),
+                role: 'guest'
+            };
+        }
+
+        // Initialize user
+        currentUser = getCurrentUser();
+        
+        // Add self to online users
+        function addSelfToOnline() {
+            const userData = {
+                id: currentUser.id,
+                name: currentUser.name,
+                role: currentUser.role,
+                lastSeen: Date.now()
+            };
+            
+            let users = JSON.parse(localStorage.getItem('chat_online_users') || '[]');
+            const existingIndex = users.findIndex(u => u.id === currentUser.id);
+            if (existingIndex >= 0) {
+                users[existingIndex] = userData;
+            } else {
+                users.push(userData);
+            }
+            localStorage.setItem('chat_online_users', JSON.stringify(users));
+            updateOnlineUsersList();
+        }
+        
+        // Remove self from online
+        function removeSelfFromOnline() {
+            let users = JSON.parse(localStorage.getItem('chat_online_users') || '[]');
+            users = users.filter(u => u.id !== currentUser.id);
+            localStorage.setItem('chat_online_users', JSON.stringify(users));
+        }
+        
+        // Update online users list
+        function updateOnlineUsersList() {
+            let users = JSON.parse(localStorage.getItem('chat_online_users') || '[]');
+            // Remove users inactive for more than 2 minutes
+            const now = Date.now();
+            users = users.filter(u => now - u.lastSeen < 120000);
+            localStorage.setItem('chat_online_users', JSON.stringify(users));
+            
+            // Update UI
+            const usersListDiv = document.getElementById('users-list');
+            const onlineCountSpan = document.getElementById('online-count');
+            
+            onlineCountSpan.textContent = users.length;
+            
+            if (usersListDiv) {
+                if (users.length === 0) {
+                    usersListDiv.innerHTML = '<div class="p-4 text-center text-white/40 text-sm">No other users online</div>';
+                } else {
+                    usersListDiv.innerHTML = users.map(user => `
+                        <div class="p-3 flex items-center justify-between hover:bg-white/5 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-brandTeal/20 flex items-center justify-center">
+                                    <i class="fa-solid ${user.role === 'therapist' ? 'fa-stethoscope' : 'fa-user'} text-brandTeal text-xs"></i>
+                                </div>
+                                <div>
+                                    <p class="text-white text-sm font-medium">${escapeHtml(user.name)}</p>
+                                    <p class="text-white/30 text-xs">${user.role === 'therapist' ? 'Therapist' : 'Community Member'}</p>
+                                </div>
+                            </div>
+                            ${user.id !== currentUser.id ? `
+                                <button onclick="startPrivateChat('${user.id}', '${escapeHtml(user.name)}')" class="text-brandTeal hover:text-brandTealHover text-sm">
+                                    <i class="fa-regular fa-message"></i>
+                                </button>
+                            ` : '<span class="text-white/30 text-xs">You</span>'}
+                        </div>
+                    `).join('');
+                }
+            }
+        }
+        
+        // Load messages from localStorage
+        function loadMessages() {
+            const saved = localStorage.getItem('chat_messages');
+            if (saved) {
+                const allMessages = JSON.parse(saved);
+                messages = {
+                    general: allMessages.general || [],
+                    support: allMessages.support || [],
+                    resources: allMessages.resources || []
+                };
+            }
+            renderMessages();
+        }
+        
+        // Save messages to localStorage
+        function saveMessages() {
+            localStorage.setItem('chat_messages', JSON.stringify(messages));
+        }
+        
+        // Render current room messages
+        function renderMessages() {
+            const container = document.getElementById('chat-messages-container');
+            if (!container) return;
+            
+            const roomMessages = messages[currentRoom] || [];
+            
+            if (roomMessages.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-white/30 text-sm py-10">
+                        <i class="fa-regular fa-comment-dots text-4xl mb-3 block"></i>
+                        <p>No messages yet. Be the first to say something!</p>
+                        <p class="text-xs mt-2">Remember to keep conversations supportive and kind 💙</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = roomMessages.map(msg => {
+                const isCurrentUser = msg.userId === currentUser.id;
+                return `
+                    <div class="flex ${isCurrentUser ? 'justify-end' : 'justify-start'} message-in">
+                        <div class="max-w-[70%] ${isCurrentUser ? 'bg-brandTeal rounded-2xl rounded-tr-none' : 'bg-white/10 rounded-2xl rounded-tl-none'} px-4 py-2.5">
+                            ${!isCurrentUser ? `<p class="text-brandTeal text-xs font-semibold mb-1">${escapeHtml(msg.userName)}</p>` : ''}
+                            <p class="${isCurrentUser ? 'text-brandDark' : 'text-white'} text-sm">${escapeHtml(msg.text)}</p>
+                            <p class="${isCurrentUser ? 'text-brandDark/50' : 'text-white/30'} text-[10px] mt-1">${msg.time}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        // Send message
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            const newMessage = {
+                id: Date.now(),
+                text: message,
+                userName: currentUser.name,
+                userId: currentUser.id,
+                userRole: currentUser.role,
+                time: timeStr,
+                timestamp: now.getTime(),
+                room: currentRoom
+            };
+            
+            if (!messages[currentRoom]) messages[currentRoom] = [];
+            messages[currentRoom].push(newMessage);
+            
+            // Keep only last 200 messages per room
+            if (messages[currentRoom].length > 200) {
+                messages[currentRoom] = messages[currentRoom].slice(-200);
+            }
+            
+            saveMessages();
+            renderMessages();
+            input.value = '';
+            input.style.height = 'auto';
+            
+            // Broadcast to other tabs/windows
+            broadcastMessage(newMessage);
+        }
+        
+        // Broadcast message to other tabs
+        function broadcastMessage(message) {
+            localStorage.setItem('chat_last_message', JSON.stringify({
+                message: message,
+                timestamp: Date.now()
+            }));
+        }
+        
+        // Listen for messages from other tabs
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'chat_messages') {
+                loadMessages();
+            } else if (e.key === 'chat_last_message') {
+                const data = JSON.parse(e.newValue);
+                if (data && Date.now() - data.timestamp < 1000) {
+                    loadMessages();
+                }
+            } else if (e.key === 'chat_online_users') {
+                updateOnlineUsersList();
+            } else if (e.key === 'chat_typing') {
+                const typingData = JSON.parse(e.newValue);
+                if (typingData && typingData.userId !== currentUser.id && typingData.room === currentRoom) {
+                    showTypingIndicator(typingData.userName);
+                    setTimeout(() => hideTypingIndicator(), 2000);
+                }
+            }
+        });
+        
+        // Typing indicator
+        function handleTyping() {
+            if (!isTyping) {
+                isTyping = true;
+                const typingData = {
+                    userId: currentUser.id,
+                    userName: currentUser.name,
+                    room: currentRoom,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('chat_typing', JSON.stringify(typingData));
+            }
+            
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                isTyping = false;
+            }, 2000);
+        }
+        
+        function showTypingIndicator(userName) {
+            const indicator = document.getElementById('typing-indicator');
+            const typingUserSpan = document.getElementById('typing-user');
+            if (indicator && typingUserSpan) {
+                typingUserSpan.textContent = userName;
+                indicator.classList.remove('hidden');
+                const container = document.getElementById('chat-messages-container');
+                if (container) container.scrollTop = container.scrollHeight;
+            }
+        }
+        
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) indicator.classList.add('hidden');
+        }
+        
+        function handleEnterKey(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            } else if (event.key !== 'Enter') {
+                handleTyping();
+            }
+        }
+        
+        // Switch chat rooms
+        function switchRoom(room) {
+            currentRoom = room;
+            renderMessages();
+            
+            // Update UI for active room
+            const buttons = document.querySelectorAll('[onclick^="switchRoom"]');
+            buttons.forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(room)) {
+                    btn.className = 'px-3 py-1 rounded-lg text-xs bg-brandTeal/20 text-brandTeal';
+                } else {
+                    btn.className = 'px-3 py-1 rounded-lg text-xs bg-white/5 text-white/70 hover:bg-white/10';
+                }
+            });
+            
+            const roomNames = {
+                general: '# General Chat',
+                support: '# Support Circle',
+                resources: '# Resource Sharing'
+            };
+            document.getElementById('current-room-name').textContent = roomNames[room] || '# Chat';
+        }
+        
+        // Private chat functions
+        function openPrivateChat() {
+            const modal = document.getElementById('private-chat-modal');
+            const usersList = document.getElementById('online-users-list');
+            const users = JSON.parse(localStorage.getItem('chat_online_users') || '[]');
+            const otherUsers = users.filter(u => u.id !== currentUser.id);
+            
+            if (otherUsers.length === 0) {
+                alert('No other users online right now. Try again later!');
+                return;
+            }
+            
+            usersList.innerHTML = otherUsers.map(user => `
+                <button onclick="startPrivateChat('${user.id}', '${escapeHtml(user.name)}')" 
+                    class="w-full text-left p-3 rounded-xl hover:bg-white/5 transition-colors flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-brandTeal/20 flex items-center justify-center">
+                        <i class="fa-solid ${user.role === 'therapist' ? 'fa-stethoscope' : 'fa-user'} text-brandTeal"></i>
+                    </div>
+                    <div>
+                        <p class="text-white font-medium">${escapeHtml(user.name)}</p>
+                        <p class="text-white/40 text-xs">${user.role === 'therapist' ? 'Therapist' : 'Member'} • Click to chat</p>
+                    </div>
+                </button>
+            `).join('');
+            
+            modal.classList.remove('invisible', 'opacity-0');
+        }
+        
+        function closePrivateChatModal() {
+            const modal = document.getElementById('private-chat-modal');
+            modal.classList.add('invisible', 'opacity-0');
+        }
+        
+        function startPrivateChat(userId, userName) {
+            closePrivateChatModal();
+            alert(`💬 Private chat with ${userName} coming soon!\n\nFeature in development: Direct messaging will be available in the next update. For now, continue using the public chat rooms to connect with others.`);
+        }
+        
+        // Update online status periodically
+        function updateOnlineStatus() {
+            addSelfToOnline();
+            setInterval(() => {
+                addSelfToOnline();
+            }, 30000);
+        }
+        
+        // Update auth visuals
+        function updateAuthVisuals() {
+            const authZone = document.getElementById('auth-nav-zone');
+            if (localStorage.getItem('speaksafe_user_logged') === 'true') {
+                const role = localStorage.getItem('current_user_role');
+                const email = localStorage.getItem('current_user_email');
+                const displayName = email ? email.split('@')[0] : 'Defender';
+                authZone.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="bg-brandTeal/10 border border-brandTeal/30 text-brandTeal font-semibold px-4 py-2 rounded-full text-sm flex items-center gap-2">
+                            <i class="fa-solid ${role === 'therapist' ? 'fa-stethoscope' : 'fa-shield-halved'}"></i> ${displayName}
+                        </div>
+                        <button onclick="logout()" class="bg-white/5 hover:bg-white/10 text-white/70 px-4 py-2 rounded-full text-sm">Logout</button>
+                    </div>`;
+            } else {
+                authZone.innerHTML = `
+                    <button onclick="window.location.href='index.html'" class="bg-white/10 hover:bg-white/15 text-white font-semibold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all border border-white/10">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Sign In
+                    </button>
+                    <button onclick="window.location.href='index.html'" class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-5 py-2.5 rounded-full text-sm flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-user-plus"></i>
+                        Sign Up
+                    </button>
+                `;
+            }
+        }
+        
+        function logout() {
+            removeSelfFromOnline();
+            localStorage.removeItem('speaksafe_user_logged');
+            localStorage.removeItem('current_user_role');
+            localStorage.removeItem('current_user_email');
+            window.location.href = 'index.html';
+        }
+        
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+        
+        // Auto-resize textarea
+        const textarea = document.getElementById('chat-input');
+        if (textarea) {
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+            });
+        }
+        
+        // Clean up on page unload
+        window.addEventListener('beforeunload', () => {
+            removeSelfFromOnline();
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAuthVisuals();
+            loadMessages();
+            addSelfToOnline();
+            updateOnlineStatus();
+            setInterval(updateOnlineUsersList, 5000);
+        });
+    </script>
+</body>
+</html>

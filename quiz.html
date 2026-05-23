@@ -106,11 +106,18 @@
 
             </a>
 
-            <button
-                onclick="location.href='./index.html'"
-                class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-4 py-2 rounded-full text-sm">
-                Back to Home
-            </button>
+            <div class="flex items-center gap-3">
+                <button
+                    onclick="goToSelection()"
+                    class="bg-white/10 hover:bg-white/20 text-white font-semibold px-4 py-2 rounded-full text-sm border border-white/10">
+                    Back to Assessment
+                </button>
+                <button
+                    onclick="location.href='./index.html'"
+                    class="bg-brandTeal hover:bg-brandTealHover text-brandDark font-bold px-4 py-2 rounded-full text-sm">
+                    Home
+                </button>
+            </div>
 
         </div>
 
@@ -362,6 +369,7 @@
             document.getElementById("mode-title").innerText = "Bullying Self-Assessment Quiz";
             document.getElementById("start-screen").classList.add("hidden");
             document.getElementById("quiz-container").classList.remove("hidden");
+            document.getElementById("results-container").classList.add("hidden");
             currentIndex = 0;
             renderQuestion();
         }
@@ -371,8 +379,15 @@
             document.getElementById("mode-title").innerText = "Bullying Experience Survey";
             document.getElementById("start-screen").classList.add("hidden");
             document.getElementById("quiz-container").classList.remove("hidden");
+            document.getElementById("results-container").classList.add("hidden");
             currentIndex = 0;
             renderQuestion();
+        }
+
+        function goToSelection() {
+            document.getElementById("start-screen").classList.remove("hidden");
+            document.getElementById("quiz-container").classList.add("hidden");
+            document.getElementById("results-container").classList.add("hidden");
         }
 
         function renderQuestion() {
